@@ -37,8 +37,8 @@ We will consider a programming languague with the following requisites:
 instruction must be an assignment.
   - Each assignment is in the form of ```*variable name* = *expresion*;```
   - Each expression can employ operands wiht:
-    - Integer numbers with or without the sign following the [requirement]()
-    - Real numbers with or without the sign following the [requirement]()
+    - Integer numbers with or without the sign
+    - Real numbers with or without the sign
     - Other variables
     - True or false
   - The Integer numbers starts (optionally) with a sign before a sequence of one or more digits (the use of zeroes
@@ -46,4 +46,76 @@ instruction must be an assignment.
   - The Real numbers starts (optionally) with a sign before an Integer number and be followed (optionally) by a decimal part and or an exponential part
     - The decimal part starts with a dot ( ***.*** ) before a sequence of one or more digits (the use of zeroes at the right is forbidden)
     - The exponencial part starts with the letter **e** or **E** before an Integer number
-    
+  - The expressions can also employ some operators
+    - Binary arithmetic operators ```+```, ```-```,```*```, ```/``` and logical ones like ```and``` and ```or```
+    - Unary arithmetic operator ```-```, and logical ```not```
+    - Relational operators ```<```,```<=```,```>```,```>=```,```==``` and ```!=```
+  - It is also possible to use parenthesis to change the associativity and precedence of the operators.
+#### Example
+
+```
+real weight;
+bool heavy
+&&
+weight = (45.0 * 12e-56) / -2.05;
+heavy = (weight > 10.0) or (weight / 2 <= +0.0)
+```
+
+## Lexical Classes's definition
+
+One we know how a programm is written, the next step is enumerate the lexical classes for our scanner. They will be written with regular
+expresions and, to make them more readable, we will create some regular definitions.
+
+### Regular definitions
+
+- character = ```[a-z,A-Z]```
+
+Characters from lower case a to z and form capitalize A to Z
+
+- digit = ```[0-9]```
+
+The ten digit from the decimal base
+
+- integerOr0 = ```([1-9]digit\* | 0)```
+
+A number starting with all but 0 and followeb by a sequence of digits or just the 0
+
+- decimal = ```.((digit)\*[1-9] | 0)```
+
+It's the decimal part of a real number. It starts with a dot charcater and is followed by a sequence of numbers not allowing non 
+significative zeroes to the right or just he number 0
+
+- exponencial = ```(e | E)integerOr0```
+
+It's the exponencial part of a real number. It starts with the character e or E and is followed by a number with the same structure as
+integerOr0
+
+- sign = ```(+ | -)```
+
+This are the signs a sequence of number might have
+
+### lexical classes
+
+The name of the class is really intuitive of what set of elements it contains:
+
+- operatorAdd = ```+```
+- operatorMinus = ```-```
+- operatorDiv = ```/```
+- operatorMul = ```*```
+- operatorLessThan = ```<```
+- operatorLessEqualThan = ```<=```
+- operatorGreaterThan = ```>```
+- operatorGreaterEqualThan = ```>=```
+- operatorEqual = ```==```
+- operatorNotEqual = ```!=```
+- operatorAssignment = ```=```
+- type = ```(int | real | bool)```
+- integerNum = ```sign?integerOr0```
+- realNum = ```integerNum(decimal | exponencial | decimal·exponencial)```
+- varName = ```character(character | digit | _)\*```
+- eoi (End Of Instruction o declaration) = ```;```
+- eod (End Of Declarations) = ```&&```
+- ignorable = ```(\n | \r | EOF)```
+
+Once we define all our ***lexical classes***, the next step is create the ***finite deterministic automata*** whose job is iterate 
+character by character through all our programm file looking trying to create the corresponding token
