@@ -119,3 +119,21 @@ The name of the class is really intuitive of what set of elements it contains:
 
 Once we define all our ***lexical classes***, the next step is create the ***finite deterministic automata*** whose job is iterate 
 character by character through all our programm file looking trying to create the corresponding token
+
+## Finite Deterministic Automata
+
+Here, we will provide a diagram of our finite deterministic automata for the given programming language.
+
+![FDA diagram](./FDA_diagram.png)
+
+The greens circle is the ***final state***.
+1. v1 for a varName token
+2. opX for  a operatorX token
+3. e1 for an integer with o without sign where the left it can't have non significative zeroes to it's left
+4. e3 for an integer with or without sign whose value is just the zero
+5. r2 for a real number with just it's decimal part
+6. r5 for a real number with it's exponencial part. It can have a decimal part as well
+7. r7 for a real number with an exponent of just zero
+8. eoi for the lexical class of end of instruction or declaration
+9. eod for the lexical class of end of declarations
+
