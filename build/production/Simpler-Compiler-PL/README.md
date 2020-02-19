@@ -115,8 +115,6 @@ The name of the class is really intuitive of what set of elements it contains:
 - varName = ```character(character | digit | _)\*```
 - eoi (End Of Instruction o declaration) = ```;```
 - eod (End Of Declarations) = ```&&```
-- openParenthesis = ```(```
-- closeParenthesis = ```)```
 - ignorable = ```(\n | \r | EOF)```
 
 Once we define all our ***lexical classes***, the next step is create the ***finite deterministic automaton*** whose job is iterate

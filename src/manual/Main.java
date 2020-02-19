@@ -1,4 +1,4 @@
-package manual;
+package src.manual;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,13 +8,16 @@ import java.io.Reader;
 
 public class Main {
    public static void main(String[] args) throws FileNotFoundException, IOException {
-     Reader input = new InputStreamReader(new FileInputStream(args[0]));
+     /*Reader input = new InputStreamReader(new FileInputStream(args[0]));
      AnalizadorLexico al = new AnalizadorLexico(input);
      UnidadLexica unidad;
      do {
        unidad = al.yylex();
        System.out.println(unidad);
      }
-     while (unidad.clase() != ClaseLexica.EOF);
+     while (unidad.clase() != LexicalClass.EOF);
+
+        LexicalUnit token;
+        System.out.println("hi there fucking faggot");*/
     }        
 } 
