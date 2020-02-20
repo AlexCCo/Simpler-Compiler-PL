@@ -1,4 +1,4 @@
-package manual;
+package src.manual;
 
 public class ALexOperations {
   private AnalizadorLexicoTiny alex;

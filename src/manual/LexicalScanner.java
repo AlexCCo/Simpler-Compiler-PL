@@ -29,7 +29,8 @@ public class LexicalScanner {
         REC_OPERATOR_GREATER, //final not drawn in the diagram (opX)
         REC_OPERATOR_LESS_EQUAL, //final not drawn in the diagram (opX)
         REC_OPERATOR_GREATER_EQUAL, //final not drawn in the diagram (opX)
-        REC_OPERATOR_EQUAL, //final not drawn in the diagram (opX)
+        REC_OPERATOR_EQUAL, //final (comparison) not drawn in the diagram (opX)
+        REC_OPERATOR_ASSIGNMENT, //final (assignment)not drawn in the diagram (opX)
         REC_OPERATOR_NOT_EQUAL_PART,// not drawn in the diagram (opX)
         REC_OPERATOR_NOT_EQUAL, //final not drawn in the diagram (opX)
         REC_OPERATOR_DIV, //final not drawn in the diagram (opX)
@@ -68,9 +69,10 @@ public class LexicalScanner {
 
     /**
      * It parses the program looking for the next Token to return
-     * @return The LexicalUnit class representing the token
+     * @return The LexicalUnit class representing the token or null in case of an error
      * @throws IOException
      */
+    //TODO: We may have a problemn for strings like "real varReal;" or operators without spaces to it's left and right
     public LexicalUnit sigToken() throws IOException {
         currentState = State.BEGIN;
         beginningRow = currentRow;
@@ -95,122 +97,204 @@ public class LexicalScanner {
                     else if(divSymbol()){takeTransition(State.REC_OPERATOR_DIV);}
                     else if(mulSymbol()){takeTransition(State.REC_OPERATOR_MUL);}
                     else if(exclamationMark()){takeTransition(State.REC_OPERATOR_NOT_EQUAL);}
-                    else if(ignorableSymbol()){skipChar(State.BEGIN);}
-                    //TODO: what happens when we encounter a newline symbol?
+                    else if(equalSymbol()){takeTransition(State.REC_OPERATOR_ASSIGNMENT);}
+                    //SPACE, \t, \b, \n, \r, EOF
+                    else if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){skipChar(State.BEGIN);}
+                    else{
+                        error();
+                        return null;
+                    }
+                    //TODO: add the \t and SPACE characters to ignorable in the diagram
                     break;
                 case REC_SIGN:
-                    if(ignorableSymbol() && lexeme.equals("+")){skipChar(State.REC_OPERATOR_ADD);}
-                    else if(ignorableSymbol() && lexeme.equals("-")){skipChar(State.REC_OPERATOR_MINUS);}
+                    //TODO:Is it necessary to change the state?
+                    if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()
+                            && lexeme.equals("+")){skipChar(State.REC_OPERATOR_ADD);}
+                    else if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()
+                            && lexeme.equals("-")){skipChar(State.REC_OPERATOR_MINUS);}
                     else if(justZero()){takeTransition(State.REC_INTEGER_VAL_0);}
                     else if(digitButZero()){takeTransition(State.REC_INTEGER);}
-                    //TODO:error
-                    else{  }
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_OPERATOR_LESS:
                     if(equalSymbol()){takeTransition(State.REC_OPERATOR_LESS_EQUAL);}
-                    else if(ignorableSymbol() || endOfFileSymbol()){return tokenOperatorLessThan();}
-                    //TODO: error
+                    else if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenOperatorLessThan();}
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_OPERATOR_LESS_EQUAL:
-                    if(ignorableSymbol() || endOfFileSymbol()){return tokenOperatorLessThanOrEquals();}
-                    //TODO: error
-                    break;
+                    if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenOperatorLessThanOrEquals();}
+                    else{
+                        error();
+                        return null;
+                    }
                 case REC_OPERATOR_GREATER:
                     if(equalSymbol()){takeTransition(State.REC_OPERATOR_GREATER_EQUAL);}
-                    else if(ignorableSymbol() || endOfFileSymbol()){return tokenOperatorGreaterThan();}
-                    //TODO: error
+                    else if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenOperatorGreaterThan();}
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_OPERATOR_GREATER_EQUAL:
-                    if(ignorableSymbol() || endOfFileSymbol()){return tokenOperatorGreaterThanOrEquals();}
-                    //TODO: error
+                    if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenOperatorGreaterThanOrEquals();}
+                    else{
+                        error();
+                        return null;
+                    }
+                case REC_OPERATOR_ASSIGNMENT:
+                    if(equalSymbol()){takeTransition(State.REC_OPERATOR_EQUAL);}
+                    else if(ignorableSymbol() || endOfFileSymbol() ||newLineSymbol()){return tokenOperatorAssignment();}
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_OPERATOR_EQUAL:
-                    if(ignorableSymbol() || endOfFileSymbol()){return tokenOperatorEquals();}
-                    //TODO: error
-                    break;
+                    if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenOperatorEquals();}
+                    else{
+                        error();
+                        return null;
+                    }
                 case REC_OPERATOR_NOT_EQUAL_PART:
-                    if(equalSymbol()){takeTransition(State.REC_OPERATOR_GREATER_EQUAL);}
-                    //TODO: error
+                    if(equalSymbol()){takeTransition(State.REC_OPERATOR_NOT_EQUAL);}
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_OPERATOR_NOT_EQUAL:
-                    if(ignorableSymbol() || endOfFileSymbol()){return tokenOperatorNotEquals();}
-                    //TODO: error
-                    break;
+                    if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenOperatorNotEquals();}
+                    else{
+                        error();
+                        return null;
+                    }
                 case REC_INTEGER_VAL_0:
                     if(dotSymbol()){takeTransition(State.REC_INIT_DECIMAL);}
-                    else if(ignorableSymbol() || endOfFileSymbol()){return tokenInteger();}
-                    //TODO:error
+                    else if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenInteger();}
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_INTEGER:
                     if(digit()){takeTransition(State.REC_INTEGER);}
                     else if(dotSymbol()){takeTransition(State.REC_INIT_DECIMAL);}
                     else if(exponential()){takeTransition(State.REC_EXPONENTIAL_PART);}
-                    else if(ignorableSymbol() || endOfFileSymbol()){return tokenInteger();}
-                    //TODO:error
+                    else if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenInteger();}
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_INIT_DECIMAL:
                     if(digit()){takeTransition(State.REC_DECIMAL_PART);}
-                    //TODO:error
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_DECIMAL_PART:
                     if(digitButZero()){takeTransition(State.REC_DECIMAL_PART);}
                     else if(justZero()){takeTransition(State.REC_ERROR_DECIMAL);}
                     else if(exponential()){takeTransition(State.REC_EXPONENTIAL_PART);}
-                    else if(ignorableSymbol() || endOfFileSymbol()){return tokenReal();}
-                    //TODO: error
+                    else if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenReal();}
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_ERROR_DECIMAL:
                     if(digitButZero()){takeTransition(State.REC_DECIMAL_PART);}
-                    //TODO: error
+                    else if(justZero()){takeTransition(State.REC_ERROR_DECIMAL);}
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_EXPONENTIAL_PART:
                     if(justZero()){takeTransition(State.REC_EXPONENTIAL_VAL_0);}
                     else if(signSymbol()){takeTransition(State.REC_EXPONENTIAL_SIGN);}
                     else if(digitButZero()){takeTransition(State.REC_EXPONENTIAL);}
-                    //TODO: error
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_EXPONENTIAL_SIGN:
                     if(justZero()){takeTransition(State.REC_EXPONENTIAL_VAL_0);}
                     else if(digitButZero()){takeTransition(State.REC_EXPONENTIAL);}
-                    //TODO: error
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_EXPONENTIAL_VAL_0:
-                    if(ignorableSymbol() || endOfFileSymbol()){return tokenReal();}
-                    //TODO: error
-                    break;
+                    if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenReal();}
+                    else{
+                        error();
+                        return null;
+                    }
                 case REC_EXPONENTIAL:
                     if(digit()){takeTransition(State.REC_EXPONENTIAL);}
-                    else if(ignorableSymbol() || endOfFileSymbol()){return tokenReal();}
-                    //TODO: error
+                    else if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenReal();}
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 case REC_EOD_PART:
-                    //TODO: error
+                    if(ampersandSymbol()){takeTransition(State.REC_EOD);}
+                    else{
+                        error();
+                        return null;
+                    }
+                    break;
                 case REC_EOD:
-                    if(ignorableSymbol() || endOfFileSymbol()){return tokenEspecialCharacters();}
-                    //TODO: error
-                    break;
                 case REC_EOI:
-                    if(ignorableSymbol() || endOfFileSymbol()){return tokenEspecialCharacters();}
-                    //TODO: error
-                    break;
+                    if(ignorableSymbol() || endOfFileSymbol() || newLineSymbol()){return tokenEspecialCharacters();}
+                    else{
+                        error();
+                        return null;
+                    }
                 case REC_VAR_NAME:
                     if(character() || digit() || underscore()){takeTransition(State.REC_VAR_NAME);}
                     else if(ignorableSymbol() || endOfFileSymbol()){return tokenVarName();}
-                    //TODO: error
+                    else{
+                        error();
+                        return null;
+                    }
                     break;
                 default:
-                    //TODO: error
-                    break;
+                    error();
+                    return null;
             }
         }
     }
 
+    /**
+     * Change the transition state and takes the next character
+     * @param nextState The next state to transit
+     * @throws IOException
+     * @return void
+     * */
     private void takeTransition(State nextState) throws IOException {
         lexeme.append((char) next);
         nextChar();
         currentState = nextState;
     }
 
+    /**
+     * Change the transition state and ignores the next character
+     * @param sig The next state to transit
+     * @throws IOException
+     * @return void
+     * */
     private void skipChar(State sig) throws IOException {
         nextChar();
         beginningRow = currentRow;
@@ -218,6 +302,11 @@ public class LexicalScanner {
         currentState = sig;
     }
 
+    /**
+     * Returns the next character inside the input and modify the column and row values
+     * @throws IOException
+     * @return void
+     * */
     private void nextChar() throws IOException {
         next = input.read();
         if (next == NEWLINE.charAt(0)) saltaFinDeLinea();
@@ -229,6 +318,7 @@ public class LexicalScanner {
         }
     }
 
+    //No idea, i will deleted soon
     private void saltaFinDeLinea() throws IOException {
         for (int i = 1; i < NEWLINE.length(); i++) {
             next = input.read();
