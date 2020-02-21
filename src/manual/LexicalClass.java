@@ -1,4 +1,4 @@
-package src.manual;
+package manual;
 
 public enum LexicalClass {
     OPERATOR_ADD,

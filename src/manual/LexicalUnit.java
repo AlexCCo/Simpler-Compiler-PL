@@ -1,4 +1,4 @@
-package src.manual;
+package manual;
 
 public abstract class LexicalUnit {
     private LexicalClass clase;

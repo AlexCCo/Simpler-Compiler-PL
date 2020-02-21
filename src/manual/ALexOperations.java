@@ -1,54 +1,69 @@
-package src.manual;
+package manual;
 
 public class ALexOperations {
-  private AnalizadorLexicoTiny alex;
-  public ALexOperations(AnalizadorLexicoTiny alex) {
-   this.alex = alex;   
-  }
-  public UnidadLexica unidadId() {
-     return new UnidadLexicaMultivaluada(alex.fila(),LexicalClass.IDEN,
-                                         alex.lexema()); 
-  } 
-  public UnidadLexica unidadEvalua() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.EVALUA);
-  } 
-  public UnidadLexica unidadDonde() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.DONDE);
-  } 
-  public UnidadLexica unidadEnt() {
-     return new UnidadLexicaMultivaluada(alex.fila(),LexicalClass.ENT,alex.lexema());
-  } 
-  public UnidadLexica unidadReal() {
-     return new UnidadLexicaMultivaluada(alex.fila(),LexicalClass.REAL,alex.lexema());
-  } 
-  public UnidadLexica unidadSuma() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.MAS);
-  } 
-  public UnidadLexica unidadResta() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.MENOS);
-  } 
-  public UnidadLexica unidadMul() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.POR);
-  } 
-  public UnidadLexica unidadDiv() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.DIV);
-  } 
-  public UnidadLexica unidadPAp() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.PAP);
-  } 
-  public UnidadLexica unidadPCierre() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.PCIERRE);
-  } 
-  public UnidadLexica unidadIgual() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.IGUAL);
-  } 
-  public UnidadLexica unidadComa() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.COMA);
-  } 
-  public UnidadLexica unidadEof() {
-     return new UnidadLexicaUnivaluada(alex.fila(),LexicalClass.EOF);
-  }
-  public void error() {
-    System.err.println("***"+alex.fila()+" Caracter inexperado: "+alex.lexema());
-  }
+    /*private LexicalScanner alex;
+
+    public ALexOperations(LexicalScanner alex) {
+        this.alex = alex;
+    }
+
+    public LexicalUnit unidadId() {
+        return new MultiValuableLexicalUnit(alex.getRow(), LexicalClass.IDEN, alex.getLexeme());
+    }
+
+    public LexicalUnit unidadEvalua() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.EVALUA);
+    }
+
+    public LexicalUnit unidadDonde() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.DONDE);
+    }
+
+    public LexicalUnit unidadEnt() {
+        return new MultiValuableLexicalUnit(alex.getRow(), LexicalClass.ENT, alex.getLexeme());
+    }
+
+    public LexicalUnit unidadReal() {
+        return new MultiValuableLexicalUnit(alex.getRow(), LexicalClass.REAL, alex.getLexeme());
+    }
+
+    public LexicalUnit unidadSuma() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.MAS);
+    }
+
+    public LexicalUnit unidadResta() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.MENOS);
+    }
+
+    public LexicalUnit unidadMul() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.POR);
+    }
+
+    public LexicalUnit unidadDiv() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.DIV);
+    }
+
+    public LexicalUnit unidadPAp() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.PAP);
+    }
+
+    public LexicalUnit unidadPCierre() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.PCIERRE);
+    }
+
+    public LexicalUnit unidadIgual() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.IGUAL);
+    }
+
+    public LexicalUnit unidadComa() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.COMA);
+    }
+
+    public LexicalUnit unidadEof() {
+        return new MonoValuableLexicalUnit(alex.getRow(), alex.getColumn(), LexicalClass.EOF);
+    }
+
+    public void error() {
+        System.err.println("***" + alex.getRow() + " Unknown char: " + alex.getLexeme());
+    }*/
 }

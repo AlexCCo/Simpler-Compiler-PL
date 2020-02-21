@@ -1,4 +1,4 @@
-package src.manual;
+package manual;
 
 public class MultiValuableLexicalUnit extends LexicalUnit {
     private String lexema;

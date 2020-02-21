@@ -1,4 +1,4 @@
-package src.manual;
+package manual;
 
 public class MonoValuableLexicalUnit extends LexicalUnit {
     public String lexema() {
@@ -15,6 +15,6 @@ public class MonoValuableLexicalUnit extends LexicalUnit {
     }
 
     public String toString() {
-        return "[clase:" + clase().name() + " (" + row() + ", " + column() + ")]";
+        return "[" + clase().name() + " | (" + row() + ", " + column() + ")]";
     }
 }
