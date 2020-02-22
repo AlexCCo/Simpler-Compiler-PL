@@ -46,6 +46,7 @@ public class LexicalScanner {
         REC_EOD_PART, //eod1
         REC_EOD, //edo final
         REC_EOI, //eoi final
+        REC_EOF,
         REC_VAR_NAME //v1 final
     }
 
@@ -92,7 +93,6 @@ public class LexicalScanner {
                         takeTransition(State.REC_EOD_PART);
                     } else if (semicolonSymbol()) {
                         takeTransition(State.REC_EOI);
-                        return tokenSpecialCharacters();
                     } else if (character()) {
                         //[a-zA-Z]
                         takeTransition(State.REC_VAR_NAME);
@@ -109,66 +109,72 @@ public class LexicalScanner {
                     } else if (mulSymbol()) {
                         takeTransition(State.REC_OPERATOR_MUL);
                     } else if (exclamationMark()) {
-                        takeTransition(State.REC_OPERATOR_NOT_EQUAL);
+                        takeTransition(State.REC_OPERATOR_NOT_EQUAL_PART);
                     } else if (equalSymbol()) {
                         takeTransition(State.REC_OPERATOR_ASSIGNMENT);
-                    } else if (ignorableSymbol() || endOfFileSymbol() || newLineSymbol()) {
+                    } else if (endOfFileSymbol()){
+                        skipChar(State.REC_EOF);
+                    } else if (ignorableSymbol() || newLineSymbol()) {
                         //SPACE, \t, \b, \n, \r, EOF
                         skipChar(State.BEGIN);
                     } else {
-                        error();
+                        error("LEX ERROR");
                         return null;
                     }
-                    //TODO: add the \t and SPACE characters to ignorable in the diagram
                     break;
                 case REC_SIGN:
-                    //TODO:Is it necessary to change the state? ==> Entiendo que te refieres a los ignorables, se dejan y se consumen luego
-                    if (ignorableSymbol() || endOfFileSymbol() || newLineSymbol()) {
-                        if (lexeme.toString().equals("+"))
-                            return tokenOperatorAdd();
-                        else if (lexeme.toString().equals("-"))
-                            return tokenOperatorAdd();
-                    } else if (justZero()) {
+                    if (justZero()) {
                         takeTransition(State.REC_INTEGER_VAL_0);
                     } else if (digitButZero()) {
                         takeTransition(State.REC_INTEGER);
                     } else {
-                        error("Looking for +, - or a (sign)integer");
-                        return null;
+                        if (lexeme.toString().equals("+"))
+                            return tokenOperatorAdd();
+                        else if (lexeme.toString().equals("-"))
+                            return tokenOperatorMinus();
                     }
                     break;
                 case REC_OPERATOR_LESS:
                     if (equalSymbol()) {
-                        return tokenOperatorLessThanOrEquals();
+                        takeTransition(State.REC_OPERATOR_LESS_EQUAL);
                     } else {
                         return tokenOperatorLessThan();
                     }
+                case REC_OPERATOR_LESS_EQUAL:
+                    return tokenOperatorLessThanOrEquals();
                 case REC_OPERATOR_GREATER:
                     if (equalSymbol()) {
-                        return tokenOperatorGreaterThanOrEquals();
+                        takeTransition(State.REC_OPERATOR_GREATER_EQUAL);
                     } else {
                         return tokenOperatorGreaterThan();
                     }
                 case REC_OPERATOR_GREATER_EQUAL:
-                    if (ignorableSymbol() || endOfFileSymbol() || newLineSymbol()) {
-                        return tokenOperatorGreaterThanOrEquals();
-                    } else {
-                        error();
-                        return null;
-                    }
+                    return tokenOperatorGreaterThan();
                 case REC_OPERATOR_ASSIGNMENT:
                     if (equalSymbol()) {
-                        return tokenOperatorEquals();
+                        takeTransition(State.REC_OPERATOR_EQUAL);
                     } else {
                         return tokenOperatorAssignment();
                     }
+                case REC_OPERATOR_EQUAL:
+                    return tokenOperatorEquals();
                 case REC_OPERATOR_NOT_EQUAL_PART:
                     if (equalSymbol()) {
-                        return tokenOperatorNotEquals();
+                        takeTransition(State.REC_OPERATOR_NOT_EQUAL);
                     } else {
-                        error();
+                        error("Expected an =");
                         return null;
                     }
+                case REC_OPERATOR_NOT_EQUAL:
+                    return tokenOperatorNotEquals();
+                case REC_OPERATOR_DIV:
+                    return tokenOperatorDiv();
+                case REC_OPERATOR_MUL:
+                    return tokenOperatorMul();
+                case REC_CLOSE_PARENTHESIS:
+                    return tokenCloseParenthesis();
+                case REC_OPEN_PARENTHESIS:
+                    return tokenOpenParenthesis();
                 case REC_INTEGER_VAL_0:
                     if (dotSymbol()) {
                         takeTransition(State.REC_INIT_DECIMAL);
@@ -191,7 +197,7 @@ public class LexicalScanner {
                     if (digit()) {
                         takeTransition(State.REC_DECIMAL_PART);
                     } else {
-                        error();
+                        error("Expected a sequence of digits");
                         return null;
                     }
                     break;
@@ -212,7 +218,7 @@ public class LexicalScanner {
                     } else if (justZero()) {
                         takeTransition(State.REC_ERROR_DECIMAL);
                     } else {
-                        error();
+                        error("Expected a digit greater than zero");
                         return null;
                     }
                     break;
@@ -224,7 +230,7 @@ public class LexicalScanner {
                     } else if (digitButZero()) {
                         takeTransition(State.REC_EXPONENTIAL);
                     } else {
-                        error();
+                        error("Expected a sign or a digit");
                         return null;
                     }
                     break;
@@ -234,17 +240,12 @@ public class LexicalScanner {
                     } else if (digitButZero()) {
                         takeTransition(State.REC_EXPONENTIAL);
                     } else {
-                        error();
+                        error("Expected a digit >= 0");
                         return null;
                     }
                     break;
-                case REC_EXPONENTIAL_VAL_0: // TODO: no estoy seguro de si dar error o intentar leer, creo que es ambiguo y por tanto error
-                    if (ignorableSymbol() || endOfFileSymbol() || newLineSymbol()) {
-                        return tokenReal();
-                    } else {
-                        error();
-                        return null;
-                    }
+                case REC_EXPONENTIAL_VAL_0:
+                    return tokenReal();
                 case REC_EXPONENTIAL:
                     if (digit()) {
                         takeTransition(State.REC_EXPONENTIAL);
@@ -252,14 +253,17 @@ public class LexicalScanner {
                         return tokenReal();
                     }
                     break;
-                case REC_EOD_PART:
+                case REC_EOD_PART: // &  &
                     if (ampersandSymbol()) {
                         takeTransition(State.REC_EOD);
                     } else {
-                        error();
+                        error("Expected an ampersand &");
                         return null;
                     }
                     break;
+                case REC_EOI:
+                case REC_EOD:
+                    return tokenSpecialCharacters();
                 case REC_VAR_NAME:
                     if (character() || digit() || underscore()) {
                         takeTransition(State.REC_VAR_NAME);
@@ -267,8 +271,10 @@ public class LexicalScanner {
                         return tokenVarName();
                     }
                     break;
+                case REC_EOF:
+                    return tokenEOF();
                 default:
-                    error();
+                    error("??????????????????????????");
                     return null;
             }
         }
@@ -293,6 +299,7 @@ public class LexicalScanner {
      * @return void
      * @throws IOException
      */
+    //                 >=
     private void takeTransition(State nextState) throws IOException {
         lexeme.append((char) next);
         nextChar();
@@ -497,7 +504,22 @@ public class LexicalScanner {
     }
 
     private LexicalUnit tokenVarName() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.VAR_NAME);
+        switch (lexeme.toString()){
+            case "real":
+                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.REAL_TYPE);
+            case "int":
+                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.INT_TYPE);
+            case "bool":
+                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.BOOL_TYPE);
+            case "or":
+                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.LOGICAL_OR);
+            case "and":
+                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.LOGICAL_AND);
+            case "not":
+                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.LOGICAL_NOT);
+            default:
+                return new MultiValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.VAR_NAME, lexeme.toString());
+        }
     }
 
     private LexicalUnit tokenIgnorable() {

@@ -22,6 +22,4 @@ public abstract class LexicalUnit {
     public int column() {
         return column;
     }
-
-    public abstract String morpheme();
 }

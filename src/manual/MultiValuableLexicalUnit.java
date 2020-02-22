@@ -8,12 +8,8 @@ public class MultiValuableLexicalUnit extends LexicalUnit {
         this.lexema = lexema;
     }
 
-    public String toString() {
-        return "[clase:" + clase() + ", lexema:" + morpheme() + " (" + row() + ", " + column() + ")]";
-    }
-
     @Override
-    public String morpheme() {
-        return null;
+    public String toString() {
+        return "[" + clase() + " | " + lexema + " | (" + row() + ", " + column() + ")]";
     }
 }
