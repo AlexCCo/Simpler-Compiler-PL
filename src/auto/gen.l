@@ -29,7 +29,7 @@ digit = [0-9]
 posDigit = [1-9]
 char = ([a-z]|[A-Z])
 intOr0 = ({posDigit}+|0)
-float = .({digit}*{posDigit}|0)
+float = \.({digit}*{posDigit}|0)
 exp = (e|E){intOr0}
 sign = (\+|\-)
 
@@ -53,6 +53,7 @@ VAR_NAME = {char}({char}|{digit}|_)*
 REAL_TYPE = real
 INT_TYPE = int
 BOOL_TYPE = bool
+BOOLEAN = (true|false)
 EOI = ;
 EOD = &&
 OPEN_PARENTHESIS = \(
@@ -73,12 +74,13 @@ IGNORABLE = [ \t\r\b\n]
 {LOGICAL_OR}                        {return tk.tokenVarName();}
 {LOGICAL_AND}                       {return tk.tokenVarName();}
 {LOGICAL_NOT}                       {return tk.tokenVarName();}
-{INTEGER_NUM}                       {return tk.tokenVarName();}
+{INTEGER_NUM}                       {return tk.tokenInteger();}
 {REAL_NUM}                          {return tk.tokenReal();}
 {VAR_NAME}                          {return tk.tokenVarName();}
 {REAL_TYPE}                         {return tk.tokenVarName();}
 {INT_TYPE}                          {return tk.tokenVarName();}
 {BOOL_TYPE}                         {return tk.tokenVarName();}
+{BOOLEAN}                           {return tk.tokenVarName();}
 {EOI}                               {return tk.tokenSpecialCharacters();}
 {EOD}                               {return tk.tokenSpecialCharacters();}
 {OPEN_PARENTHESIS}                  {return tk.tokenOpenParenthesis();}

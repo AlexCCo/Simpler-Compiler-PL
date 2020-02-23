@@ -77,6 +77,9 @@ public class TokenFactory {
                 return new MonoValuableLexicalUnit(lexicalScanner.getRow(), lexicalScanner.getColumn(), LexicalClass.LOGICAL_AND);
             case "not":
                 return new MonoValuableLexicalUnit(lexicalScanner.getRow(), lexicalScanner.getColumn(), LexicalClass.LOGICAL_NOT);
+            case "true":
+            case "false":
+                return new MultiValuableLexicalUnit(lexicalScanner.getRow(), lexicalScanner.getColumn(), LexicalClass.BOOLEAN, lexicalScanner.getLexeme());
             default:
                 return new MultiValuableLexicalUnit(lexicalScanner.getRow(), lexicalScanner.getColumn(), LexicalClass.VAR_NAME, lexicalScanner.getLexeme());
         }

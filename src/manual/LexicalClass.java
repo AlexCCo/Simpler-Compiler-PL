@@ -26,5 +26,5 @@ public enum LexicalClass {
     OPEN_PARENTHESIS,
     CLOSE_PARENTHESIS,
     IGNORABLE,
-    EOF //This is needed for the syntactical parser
+    EOF
 }

@@ -21,10 +21,10 @@ public enum LexicalClass {
     REAL_TYPE,
     INT_TYPE,
     BOOL_TYPE,
+    BOOLEAN,
     EOI,
     EOD,
     OPEN_PARENTHESIS,
     CLOSE_PARENTHESIS,
-    IGNORABLE,
-    EOF //This is needed for the syntactical parser
+    EOF
 }

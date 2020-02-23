@@ -1,12 +1,12 @@
-package manual;
+package auto;
 
 public class TokenFactory {
     private LexicalScanner lexicalScanner;
-    
+
     public TokenFactory(LexicalScanner lexicalScanner) {
         this.lexicalScanner = lexicalScanner;
     }
-    
+
     public LexicalUnit tokenSpecialCharacters() {
         switch (lexicalScanner.getLexeme()) {
             case ";":
@@ -77,6 +77,9 @@ public class TokenFactory {
                 return new MonoValuableLexicalUnit(lexicalScanner.getRow(), lexicalScanner.getColumn(), LexicalClass.LOGICAL_AND);
             case "not":
                 return new MonoValuableLexicalUnit(lexicalScanner.getRow(), lexicalScanner.getColumn(), LexicalClass.LOGICAL_NOT);
+            case "true":
+            case "false":
+                return new MultiValuableLexicalUnit(lexicalScanner.getRow(), lexicalScanner.getColumn(), LexicalClass.BOOLEAN, lexicalScanner.getLexeme());
             default:
                 return new MultiValuableLexicalUnit(lexicalScanner.getRow(), lexicalScanner.getColumn(), LexicalClass.VAR_NAME, lexicalScanner.getLexeme());
         }
