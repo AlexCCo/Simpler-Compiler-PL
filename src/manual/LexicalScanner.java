@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.Reader;
 
 public class LexicalScanner {
-    private Reader input;
     private StringBuffer lexeme;
+    private TokenFactory tk;
+
+    private Reader input;
     private int next;
     private int beginningRow;
     private int beginningColumn;
@@ -61,6 +63,7 @@ public class LexicalScanner {
     public LexicalScanner(Reader input) throws IOException {
         this.input = input;
         lexeme = new StringBuffer();
+        tk = new TokenFactory(this);
         next = input.read();
         currentRow = 1;
         currentColumn = 1;
@@ -129,35 +132,35 @@ public class LexicalScanner {
                         takeTransition(State.REC_INTEGER);
                     } else {
                         if (lexeme.toString().equals("+"))
-                            return tokenOperatorAdd();
+                            return tk.tokenOperatorAdd();
                         else if (lexeme.toString().equals("-"))
-                            return tokenOperatorMinus();
+                            return tk.tokenOperatorMinus();
                     }
                     break;
                 case REC_OPERATOR_LESS:
                     if (equalSymbol()) {
                         takeTransition(State.REC_OPERATOR_LESS_EQUAL);
                     } else {
-                        return tokenOperatorLessThan();
+                        return tk.tokenOperatorLessThan();
                     }
                 case REC_OPERATOR_LESS_EQUAL:
-                    return tokenOperatorLessThanOrEquals();
+                    return tk.tokenOperatorLessThanOrEquals();
                 case REC_OPERATOR_GREATER:
                     if (equalSymbol()) {
                         takeTransition(State.REC_OPERATOR_GREATER_EQUAL);
                     } else {
-                        return tokenOperatorGreaterThan();
+                        return tk.tokenOperatorGreaterThan();
                     }
                 case REC_OPERATOR_GREATER_EQUAL:
-                    return tokenOperatorGreaterThan();
+                    return tk.tokenOperatorGreaterThanOrEquals();
                 case REC_OPERATOR_ASSIGNMENT:
                     if (equalSymbol()) {
                         takeTransition(State.REC_OPERATOR_EQUAL);
                     } else {
-                        return tokenOperatorAssignment();
+                        return tk.tokenOperatorAssignment();
                     }
                 case REC_OPERATOR_EQUAL:
-                    return tokenOperatorEquals();
+                    return tk.tokenOperatorEquals();
                 case REC_OPERATOR_NOT_EQUAL_PART:
                     if (equalSymbol()) {
                         takeTransition(State.REC_OPERATOR_NOT_EQUAL);
@@ -166,20 +169,20 @@ public class LexicalScanner {
                         return null;
                     }
                 case REC_OPERATOR_NOT_EQUAL:
-                    return tokenOperatorNotEquals();
+                    return tk.tokenOperatorNotEquals();
                 case REC_OPERATOR_DIV:
-                    return tokenOperatorDiv();
+                    return tk.tokenOperatorDiv();
                 case REC_OPERATOR_MUL:
-                    return tokenOperatorMul();
+                    return tk.tokenOperatorMul();
                 case REC_CLOSE_PARENTHESIS:
-                    return tokenCloseParenthesis();
+                    return tk.tokenCloseParenthesis();
                 case REC_OPEN_PARENTHESIS:
-                    return tokenOpenParenthesis();
+                    return tk.tokenOpenParenthesis();
                 case REC_INTEGER_VAL_0:
                     if (dotSymbol()) {
                         takeTransition(State.REC_INIT_DECIMAL);
                     } else {
-                        return tokenInteger();
+                        return tk.tokenInteger();
                     }
                     break;
                 case REC_INTEGER:
@@ -190,7 +193,7 @@ public class LexicalScanner {
                     } else if (exponential()) {
                         takeTransition(State.REC_EXPONENTIAL_PART);
                     } else {
-                        return tokenInteger();
+                        return tk.tokenInteger();
                     }
                     break;
                 case REC_INIT_DECIMAL:
@@ -209,7 +212,7 @@ public class LexicalScanner {
                     } else if (exponential()) {
                         takeTransition(State.REC_EXPONENTIAL_PART);
                     } else {
-                        return tokenReal();
+                        return tk.tokenReal();
                     }
                     break;
                 case REC_ERROR_DECIMAL:
@@ -245,12 +248,12 @@ public class LexicalScanner {
                     }
                     break;
                 case REC_EXPONENTIAL_VAL_0:
-                    return tokenReal();
+                    return tk.tokenReal();
                 case REC_EXPONENTIAL:
                     if (digit()) {
                         takeTransition(State.REC_EXPONENTIAL);
                     } else {
-                        return tokenReal();
+                        return tk.tokenReal();
                     }
                     break;
                 case REC_EOD_PART: // &  &
@@ -263,16 +266,16 @@ public class LexicalScanner {
                     break;
                 case REC_EOI:
                 case REC_EOD:
-                    return tokenSpecialCharacters();
+                    return tk.tokenSpecialCharacters();
                 case REC_VAR_NAME:
                     if (character() || digit() || underscore()) {
                         takeTransition(State.REC_VAR_NAME);
                     } else {
-                        return tokenVarName();
+                        return tk.tokenVarName();
                     }
                     break;
                 case REC_EOF:
-                    return tokenEOF();
+                    return tk.tokenEOF();
                 default:
                     error("??????????????????????????");
                     return null;
@@ -447,111 +450,12 @@ public class LexicalScanner {
         return next == -1;
     }
 
-    private LexicalUnit tokenSpecialCharacters() {
-        switch (lexeme.toString()) {
-            case ";":
-                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.EOI);
-            case "&&":
-                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.EOD);
-            default:
-                this.error();
-                return null;
-        }
-    }
-
-    private LexicalUnit tokenOperatorAdd() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_ADD);
-    }
-
-    private LexicalUnit tokenOperatorMinus() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_MINUS);
-    }
-
-    private LexicalUnit tokenOperatorMul() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_MUL);
-    }
-
-    private LexicalUnit tokenOperatorDiv() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_DIV);
-    }
-
-    private LexicalUnit tokenOperatorLessThan() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_LESS_THAN);
-    }
-
-    private LexicalUnit tokenOperatorLessThanOrEquals() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_LESS_EQUAL_THAN);
-    }
-
-    private LexicalUnit tokenOperatorGreaterThan() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_GREATER_THAN);
-    }
-
-    private LexicalUnit tokenOperatorGreaterThanOrEquals() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_GREATER_EQUAL_THAN);
-    }
-
-    private LexicalUnit tokenOperatorEquals() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_EQUAL);
-    }
-
-    private LexicalUnit tokenOperatorNotEquals() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_NOT_EQUAL);
-    }
-
-    private LexicalUnit tokenOperatorAssignment() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPERATOR_ASSIGNMENT);
-    }
-
-    private LexicalUnit tokenVarName() {
-        switch (lexeme.toString()){
-            case "real":
-                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.REAL_TYPE);
-            case "int":
-                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.INT_TYPE);
-            case "bool":
-                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.BOOL_TYPE);
-            case "or":
-                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.LOGICAL_OR);
-            case "and":
-                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.LOGICAL_AND);
-            case "not":
-                return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.LOGICAL_NOT);
-            default:
-                return new MultiValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.VAR_NAME, lexeme.toString());
-        }
-    }
-
-    private LexicalUnit tokenIgnorable() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.IGNORABLE);
-    }
-
-    private LexicalUnit tokenInteger() {
-        return new MultiValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.INTEGER_NUM, lexeme.toString());
-    }
-
-    private LexicalUnit tokenReal() {
-        return new MultiValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.REAL_NUM, lexeme.toString());
-    }
-
-    private LexicalUnit tokenOpenParenthesis() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.OPEN_PARENTHESIS);
-    }
-
-    private LexicalUnit tokenCloseParenthesis() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.CLOSE_PARENTHESIS);
-    }
-
-    private LexicalUnit tokenEOF() {
-        return new MonoValuableLexicalUnit(beginningRow, beginningColumn, LexicalClass.EOF);
-    }
-
-    private void error() {
+    public void error() {
         System.err.println("(" + currentRow + ',' + currentColumn + "):Unexpected character - ");
         System.exit(1);
     }
 
-    private void error(String msg) {
+    public void error(String msg) {
         System.err.println("(" + currentRow + ',' + currentColumn + "): Unexpected character - " + msg);
         System.exit(1);
     }
