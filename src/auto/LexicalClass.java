@@ -1,5 +1,13 @@
 package auto;
 
+/**
+ * Alumnos:
+ *          Tomás Golomb Durán
+ *          Alejandro Cancelo Correia
+ *
+ * Enumerado con las clases lexicas
+ */
+
 public enum LexicalClass {
     OPERATOR_ADD,
     OPERATOR_MINUS,

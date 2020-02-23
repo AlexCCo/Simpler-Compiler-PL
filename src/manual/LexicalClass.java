@@ -1,4 +1,12 @@
-package manual;
+package auto;
+
+/**
+ * Alumnos:
+ *          Tomás Golomb Durán
+ *          Alejandro Cancelo Correia
+ *
+ * Enumerado con las clases lexicas
+ */
 
 public enum LexicalClass {
     OPERATOR_ADD,
@@ -21,10 +29,10 @@ public enum LexicalClass {
     REAL_TYPE,
     INT_TYPE,
     BOOL_TYPE,
+    BOOLEAN,
     EOI,
     EOD,
     OPEN_PARENTHESIS,
     CLOSE_PARENTHESIS,
-    IGNORABLE,
     EOF
 }

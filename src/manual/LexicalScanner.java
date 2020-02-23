@@ -1,5 +1,14 @@
 package manual;
 
+/**
+ * Alumnos:
+ *          Tomás Golomb Durán
+ *          Alejandro Cancelo Correia
+ *
+ * Implementacion de la máquina de estados
+ * que devuelve tokens
+ */
+
 import java.io.IOException;
 import java.io.Reader;
 

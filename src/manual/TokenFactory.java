@@ -1,5 +1,13 @@
 package auto;
 
+/**
+ * Alumnos:
+ *          Tomás Golomb Durán
+ *          Alejandro Cancelo Correia
+ *
+ * Factoría de tokens
+ */
+
 public class TokenFactory {
     private LexicalScanner lexicalScanner;
 

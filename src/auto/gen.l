@@ -28,9 +28,9 @@ package auto;
 digit = [0-9]
 posDigit = [1-9]
 char = ([a-z]|[A-Z])
-intOr0 = ({posDigit}+|0)
+intOr0 = ({posDigit}{digit}*|0)
 float = \.({digit}*{posDigit}|0)
-exp = (e|E){intOr0}
+exp = (e|E){sign}?{intOr0}
 sign = (\+|\-)
 
 OPERATOR_ADD = \+

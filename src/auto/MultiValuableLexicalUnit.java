@@ -1,5 +1,13 @@
 package auto;
 
+/**
+ * Alumnos:
+ *          Tomás Golomb Durán
+ *          Alejandro Cancelo Correia
+ *
+ * Token multivaluable
+ */
+
 public class MultiValuableLexicalUnit extends LexicalUnit {
     private String lexema;
 

@@ -1,5 +1,13 @@
 package auto;
 
+/**
+ * Alumnos:
+ *          Tomás Golomb Durán
+ *          Alejandro Cancelo Correia
+ *
+ * Estructura básica de un token
+ */
+
 public abstract class LexicalUnit {
     private LexicalClass clase;
     private int row;
