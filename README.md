@@ -11,12 +11,12 @@ The project will have two parts for each phase of the compiler:
    2. [JavaCC](https://javacc.github.io/javacc/) a ***syntax analyzer***, also called [Parser](https://en.wikipedia.org/wiki/Parsing),
    and also written in Java
 
-##Table of content
+## Table of content
 Here you can jump in the desired content.
 
 1. [Scanner](Scanner/)
 2. [Parser](Parser/)
 
-###Task List
+### Task List
 - [X] Completed the creation of a simpler scanner
 - [ ] Complete the creation of a simpler parser
