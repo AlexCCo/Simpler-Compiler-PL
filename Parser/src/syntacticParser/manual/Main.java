@@ -1,3 +1,12 @@
+/**
+ * Alumnos:
+ *          Tomás Golomb Durán
+ *          Alejandro Cancelo Correia
+ *
+ * Main que ejecuta un ejemplo hasta que
+ * se termine el fichero
+ */
+
 package syntacticParser.manual;
 
 import lexicalScanner.LexicalScanner;
@@ -8,9 +17,10 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-public class Main {
+
+public  class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        Reader input = new InputStreamReader(new FileInputStream("examples/ej5.alex"));
+        Reader input = new InputStreamReader(new FileInputStream("Parser/examples/ejm.alex"));
 
         final LexicalScanner al = new LexicalScanner(input);
         SyntacticParser parser = new SyntacticParser() {
@@ -31,7 +41,7 @@ public class Main {
 
         try {
             parser.init();
-            System.out.println("ta weno");
+            System.out.println("Syntax verified correctly!");
         } catch (SyntacticError e) {
             //e.printStackTrace();
             System.out.println("ERROR SYNTACTIC: " + e.getMessage());

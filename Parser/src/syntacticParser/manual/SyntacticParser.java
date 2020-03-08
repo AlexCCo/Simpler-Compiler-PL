@@ -1,3 +1,10 @@
+/**
+ * Alumnos:
+ *          Tomás Golomb Duran
+ *          Alejandro Cancelo Correia
+ *
+ *  El parseador sintactico
+ */
 package syntacticParser.manual;
 
 import lexicalScanner.LexicalClass;
@@ -121,6 +128,7 @@ public abstract class SyntacticParser {
             NV();
             OpAssig();
             E0();
+            break;
          default:
             throw  new SyntacticError(token.row(), token.column(), "Expected a variable name but found" + token.clase().toString());
       }
@@ -136,6 +144,7 @@ public abstract class SyntacticParser {
             match(LexicalClass.EOI);
             INST();
             RIS();
+            break;
          case EOF:
             //this will implement the empty string from our grammar
             break;
@@ -155,6 +164,7 @@ public abstract class SyntacticParser {
          case INTEGER_NUM:
          case REAL_NUM:
          case VAR_NAME:
+         case BOOLEAN:
          case LOGICAL_NOT:
          case OPEN_PARENTHESIS:
             E1();
@@ -194,6 +204,7 @@ public abstract class SyntacticParser {
          case INTEGER_NUM:
          case REAL_NUM:
          case VAR_NAME:
+         case BOOLEAN:
          case LOGICAL_NOT:
          case OPEN_PARENTHESIS:
             E2();
@@ -236,6 +247,7 @@ public abstract class SyntacticParser {
          case INTEGER_NUM:
          case REAL_NUM:
          case VAR_NAME:
+         case BOOLEAN:
          case LOGICAL_NOT:
          case OPEN_PARENTHESIS:
             E3();
@@ -300,6 +312,7 @@ public abstract class SyntacticParser {
          case INTEGER_NUM:
          case REAL_NUM:
          case VAR_NAME:
+         case BOOLEAN:
          case LOGICAL_NOT:
          case OPEN_PARENTHESIS:
             E4();
@@ -314,6 +327,7 @@ public abstract class SyntacticParser {
          case OPERATOR_MUL:
             match(LexicalClass.OPERATOR_MUL);
             E4();
+            break;
          case OPERATOR_DIV:
             match(LexicalClass.OPERATOR_DIV);
             E4();
@@ -380,7 +394,7 @@ public abstract class SyntacticParser {
             match(LexicalClass.BOOL_TYPE);
             break;
          case REAL_TYPE:
-            match(LexicalClass.REAL_NUM);
+            match(LexicalClass.REAL_TYPE);
             break;
          case INT_TYPE:
             match(LexicalClass.INT_TYPE);
