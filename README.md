@@ -19,4 +19,4 @@ Here you can jump in the desired content.
 
 ### Task List
 - [X] Completed the creation of a simpler scanner
-- [ ] Complete the creation of a simpler parser
+- [X] Complete the creation of a simpler parser
