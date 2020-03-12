@@ -1,8 +1,7 @@
-package alex;
-import errors.GestionErroresTiny;
+package lexicalScanner;
 
 
-public class AnalizadorLexicoTiny implements java_cup.runtime.Scanner {
+public class LexicalScannerCUP implements java_cup.runtime.Scanner {
 	private final int YY_BUFFER_SIZE = 512;
 	private final int YY_F = -1;
 	private final int YY_NO_STATE = -1;
@@ -13,13 +12,14 @@ public class AnalizadorLexicoTiny implements java_cup.runtime.Scanner {
 	private final int YY_BOL = 65536;
 	private final int YY_EOF = 65537;
 
-  private ALexOperations ops;
-  private GestionErroresTiny errores;
-  public String lexema() {return yytext();}
-  public int fila() {return yyline+1;}
-  public void fijaGestionErrores(GestionErroresTiny errores) {
-   this.errores = errores;
-  }
+    private TokenFactoryCUP tk;
+    public String getLexeme() {return yytext();}
+    public int getRow() {return yyline+1;}
+    public int getColumn() {return 0;}
+    public void error() {
+        System.err.println("(" + getRow() + "):Unexpected character");
+        System.exit(1);
+    }
 	private java.io.BufferedReader yy_reader;
 	private int yy_buffer_index;
 	private int yy_buffer_read;
@@ -30,7 +30,7 @@ public class AnalizadorLexicoTiny implements java_cup.runtime.Scanner {
 	private boolean yy_at_bol;
 	private int yy_lexical_state;
 
-	public AnalizadorLexicoTiny (java.io.Reader reader) {
+	public LexicalScannerCUP (java.io.Reader reader) {
 		this ();
 		if (null == reader) {
 			throw (new Error("Error: Bad input stream initializer."));
@@ -38,7 +38,7 @@ public class AnalizadorLexicoTiny implements java_cup.runtime.Scanner {
 		yy_reader = new java.io.BufferedReader(reader);
 	}
 
-	public AnalizadorLexicoTiny (java.io.InputStream instream) {
+	public LexicalScannerCUP (java.io.InputStream instream) {
 		this ();
 		if (null == instream) {
 			throw (new Error("Error: Bad input stream initializer."));
@@ -46,7 +46,7 @@ public class AnalizadorLexicoTiny implements java_cup.runtime.Scanner {
 		yy_reader = new java.io.BufferedReader(new java.io.InputStreamReader(instream));
 	}
 
-	private AnalizadorLexicoTiny () {
+	private LexicalScannerCUP () {
 		yy_buffer = new char[YY_BUFFER_SIZE];
 		yy_buffer_read = 0;
 		yy_buffer_index = 0;
@@ -56,7 +56,7 @@ public class AnalizadorLexicoTiny implements java_cup.runtime.Scanner {
 		yy_at_bol = true;
 		yy_lexical_state = YYINITIAL;
 
-  ops = new ALexOperations(this);
+    tk = new TokenFactoryCUP(this);
 	}
 
 	private boolean yy_eof_done = false;
@@ -238,26 +238,40 @@ public class AnalizadorLexicoTiny implements java_cup.runtime.Scanner {
 		/* 22 */ YY_NO_ANCHOR,
 		/* 23 */ YY_NO_ANCHOR,
 		/* 24 */ YY_NO_ANCHOR,
-		/* 25 */ YY_NO_ANCHOR,
+		/* 25 */ YY_NOT_ACCEPT,
 		/* 26 */ YY_NO_ANCHOR,
-		/* 27 */ YY_NO_ANCHOR
+		/* 27 */ YY_NO_ANCHOR,
+		/* 28 */ YY_NO_ANCHOR,
+		/* 29 */ YY_NO_ANCHOR,
+		/* 30 */ YY_NOT_ACCEPT,
+		/* 31 */ YY_NO_ANCHOR,
+		/* 32 */ YY_NO_ANCHOR,
+		/* 33 */ YY_NO_ANCHOR,
+		/* 34 */ YY_NOT_ACCEPT,
+		/* 35 */ YY_NO_ANCHOR,
+		/* 36 */ YY_NOT_ACCEPT,
+		/* 37 */ YY_NOT_ACCEPT,
+		/* 38 */ YY_NO_ANCHOR,
+		/* 39 */ YY_NO_ANCHOR
 	};
 	private int yy_cmap[] = unpackFromString(1,65538,
-"3:8,4:2,1,3:2,4,3:18,4,3:2,2,3:4,23,24,21,19,17,20,18,22,16,15:9,3:3,25,3:3" +
-",13:26,3:6,7,14:2,10,5,14:6,8,14,12,11,14:5,9,6,14:4,3:65413,0:2")[0];
+"26:8,25:3,26:2,25,26:18,25,8,26:4,22,26,23,24,4,1,26,2,17,3,16,15:9,26,21,5" +
+",6,7,26:2,19:4,18,19:21,26:4,20,26,11,19:2,13,18,19:8,12,9,19:2,10,19,14,19" +
+":6,26:65413,0:2")[0];
 
-	private int yy_rmap[] = unpackFromString(1,28,
-"0,1:2,2,1,3,4,5:3,1:5,6,7:2,8,9,10,11,12,13,14,15,7:2")[0];
+	private int yy_rmap[] = unpackFromString(1,40,
+"0,1,2:2,1:2,3,4,5,6,7,8,1:8,9,1,9:2,10,11,1,9,12,13,14,15,16,1,17,18,19,14," +
+"20,21")[0];
 
-	private int yy_nxt[][] = unpackFromString(16,26,
-"1,2,3,4,2,5,27:4,24,27:4,6,4,7,4,8,9,10,11,12,13,14,-1:28,3:24,-1:5,27,25,2" +
-"7:6,26,27,26:2,-1:24,6:2,-1,15,-1:22,6,-1:25,15:2,-1:14,27:8,26,27,26:2,-1:" +
-"14,16,27:7,26,27,26:2,-1:14,27:2,17,27:5,26,27,26:2,-1:14,27:5,18,27:2,26,2" +
-"7,26:2,-1:14,27:4,19,27:3,26,27,26:2,-1:14,27:7,20,26,27,26:2,-1:14,27:3,21" +
-",27:4,26,27,26:2,-1:14,27:6,22,27,26,27,26:2,-1:14,27:2,23,27:5,26,27,26:2," +
-"-1:9");
+	private int yy_nxt[][] = unpackFromString(22,27,
+"1,2,3,4,5,6,7,8,9,10,27,38,39,27:2,11,28,26,27:2,26,12,31,13,14,15,26,-1:42" +
+",11,28,-1:16,16,-1:26,17,-1:26,18,-1:26,19,-1:29,27,20,27:6,-1,27:3,-1:21,1" +
+"1:2,25,30,-1:17,27:8,-1,27:3,-1:21,24,36,-1,37,-1:23,24:2,-1:27,25,30,-1:23" +
+",29:2,-1:11,34:2,-1:12,29,33,-1:32,21,-1:13,27:4,22,27:3,-1,27:3,-1:21,29,3" +
+"3,-1:19,27:5,23,27:2,-1,27:3,-1:21,24,36,-1:19,27:3,32,27:4,-1,27:3,-1:15,3" +
+"5,27:7,-1,27:3,-1:6");
 
-	public java_cup.runtime.Symbol next_token ()
+	public LexicalUnitCUP next_token ()
 		throws java.io.IOException {
 		int yy_lookahead;
 		int yy_anchor = YY_NO_ANCHOR;
@@ -280,7 +294,7 @@ public class AnalizadorLexicoTiny implements java_cup.runtime.Scanner {
 			yy_next_state = yy_nxt[yy_rmap[yy_state]][yy_cmap[yy_lookahead]];
 			if (YY_EOF == yy_lookahead && true == yy_initial) {
 
-  return ops.unidadEof();
+    return tk.tokenEOF();
 			}
 			if (YY_F != yy_next_state) {
 				yy_state = yy_next_state;
@@ -307,108 +321,136 @@ public class AnalizadorLexicoTiny implements java_cup.runtime.Scanner {
 					case -2:
 						break;
 					case 2:
-						{}
+						{return tk.tokenOperatorAdd();}
 					case -3:
 						break;
 					case 3:
-						{}
+						{return tk.tokenOperatorMinus();}
 					case -4:
 						break;
 					case 4:
-						{errores.errorLexico(fila(),lexema());}
+						{return tk.tokenOperatorDiv();}
 					case -5:
 						break;
 					case 5:
-						{return ops.unidadId();}
+						{return tk.tokenOperatorMul();}
 					case -6:
 						break;
 					case 6:
-						{return ops.unidadEnt();}
+						{return tk.tokenOperatorLessThan();}
 					case -7:
 						break;
 					case 7:
-						{return ops.unidadComa();}
+						{return tk.tokenOperatorAssignment();}
 					case -8:
 						break;
 					case 8:
-						{return ops.unidadSuma();}
+						{return tk.tokenOperatorGreaterThan();}
 					case -9:
 						break;
 					case 9:
-						{return ops.unidadResta();}
+						{this.error();}
 					case -10:
 						break;
 					case 10:
-						{return ops.unidadMul();}
+						{return tk.tokenVarName();}
 					case -11:
 						break;
 					case 11:
-						{return ops.unidadDiv();}
+						{return tk.tokenInteger();}
 					case -12:
 						break;
 					case 12:
-						{return ops.unidadPAp();}
+						{return tk.tokenSpecialCharacters();}
 					case -13:
 						break;
 					case 13:
-						{return ops.unidadPCierre();}
+						{return tk.tokenOpenParenthesis();}
 					case -14:
 						break;
 					case 14:
-						{return ops.unidadIgual();}
+						{return tk.tokenCloseParenthesis();}
 					case -15:
 						break;
 					case 15:
-						{return ops.unidadReal();}
+						{}
 					case -16:
 						break;
 					case 16:
-						{return ops.unidadDonde();}
+						{return tk.tokenOperatorLessThanOrEquals();}
 					case -17:
 						break;
 					case 17:
-						{return ops.unidadEvalua();}
+						{return tk.tokenOperatorEquals();}
 					case -18:
 						break;
 					case 18:
-						{return ops.unidadId();}
+						{return tk.tokenOperatorGreaterThanOrEquals();}
 					case -19:
 						break;
 					case 19:
-						{return ops.unidadId();}
+						{return tk.tokenOperatorNotEquals();}
 					case -20:
 						break;
 					case 20:
-						{return ops.unidadId();}
+						{return tk.tokenVarName();}
 					case -21:
 						break;
 					case 21:
-						{return ops.unidadId();}
+						{return tk.tokenSpecialCharacters();}
 					case -22:
 						break;
 					case 22:
-						{return ops.unidadId();}
+						{return tk.tokenVarName();}
 					case -23:
 						break;
 					case 23:
-						{return ops.unidadId();}
+						{return tk.tokenVarName();}
 					case -24:
 						break;
 					case 24:
-						{return ops.unidadId();}
+						{return tk.tokenReal();}
 					case -25:
 						break;
-					case 25:
-						{return ops.unidadId();}
+					case 26:
+						{this.error();}
 					case -26:
 						break;
-					case 26:
-						{return ops.unidadId();}
+					case 27:
+						{return tk.tokenVarName();}
 					case -27:
 						break;
-					case 27:
-						{return ops.unidadId();}
+					case 28:
+						{return tk.tokenInteger();}
 					case -28:
+						break;
+					case 29:
+						{return tk.tokenReal();}
+					case -29:
+						break;
+					case 31:
+						{this.error();}
+					case -30:
+						break;
+					case 32:
+						{return tk.tokenVarName();}
+					case -31:
+						break;
+					case 33:
+						{return tk.tokenReal();}
+					case -32:
+						break;
+					case 35:
+						{return tk.tokenVarName();}
+					case -33:
+						break;
+					case 38:
+						{return tk.tokenVarName();}
+					case -34:
+						break;
+					case 39:
+						{return tk.tokenVarName();}
+					case -35:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);

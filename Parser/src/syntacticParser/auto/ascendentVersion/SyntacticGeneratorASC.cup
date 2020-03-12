@@ -1,30 +1,30 @@
-package asint;
+package syntacticParser.auto.ascendentVersion;
 
 import java_cup.runtime.*;
-import alex.AnalizadorLexicoTiny;
-import alex.UnidadLexica;
-import errors.GestionErroresTiny;
+import lexicalScanner.*;
 
 scan with {: return getScanner().next_token(); :};
-parser code {: 
-   private GestionErroresTiny errores;
-   public void syntax_error(Symbol unidadLexica) {
-     errores.errorSintactico((UnidadLexica)unidadLexica);
+
+parser code {:
+   public void syntax_error(Symbol unidadLexica){
+     System.out.println("ERROR fila "+((LexicalUnitCUP)unidadLexica).row()+": Elemento inexperado "+unidadLexica.value);
+     System.exit(1);
    }
 :};
-init with {: 
-   errores = new GestionErroresTiny();
-   AnalizadorLexicoTiny alex = (AnalizadorLexicoTiny)getScanner();
-   alex.fijaGestionErrores(errores);
-:};
 
+init with {:
+   LexicalScannerCUP alex = (LexicalScannerCUP)getScanner();
+:};
 
 terminal    OPERATOR_ADD, OPERATOR_MINUS, OPERATOR_DIV, OPERATOR_MUL, OPERATOR_LESS_THAN,
             OPERATOR_LESS_EQUAL_THAN, OPERATOR_GREATER_THAN, OPERATOR_GREATER_EQUAL_THAN,
-            OPERATOR_EQUAL, OPERATOR_NOT_EQUAL, OPERATOR_ASSIGNMENT, LOGICAL_OR,
-            LOGICAL_AND, LOGICAL_NOT, INTEGER_NUM, REAL_NUM, VAR_NAME, REAL_TYPE,
-            INT_TYPE, BOOL_TYPE, BOOLEAN, EOI, EOD, OPEN_PARENTHESIS, CLOSE_PARENTHESIS,
-            EOF;
+            OPERATOR_EQUAL, OPERATOR_NOT_EQUAL, OPERATOR_ASSIGNMENT,
+            LOGICAL_OR, LOGICAL_AND, LOGICAL_NOT,
+            INTEGER_NUM, REAL_NUM, BOOLEAN,
+            VAR_NAME,
+            REAL_TYPE, INT_TYPE, BOOL_TYPE,
+            EOI, EOD,
+            OPEN_PARENTHESIS, CLOSE_PARENTHESIS;
 
 non terminal  S, SD, VAR, IS, INST, E0, E1, E2, E3, E4, opE1, opE2, opE3, opE4;
 

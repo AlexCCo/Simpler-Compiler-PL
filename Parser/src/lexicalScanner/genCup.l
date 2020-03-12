@@ -1,13 +1,14 @@
 package lexicalScanner;
 
 %%
+%cup
 %line
-%class LexicalScanner
-%type  LexicalUnit
+%class LexicalScannerCUP
+%type  LexicalUnitCUP
 %unicode
 
 %{
-    private TokenFactory tk;
+    private TokenFactoryCUP tk;
     public String getLexeme() {return yytext();}
     public int getRow() {return yyline+1;}
     public int getColumn() {return 0;}
@@ -22,7 +23,7 @@ package lexicalScanner;
 %eofval}
 
 %init{
-    tk = new TokenFactory(this);
+    tk = new TokenFactoryCUP(this);
 %init}
 
 digit = [0-9]

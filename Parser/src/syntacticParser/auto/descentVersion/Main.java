@@ -1,10 +1,10 @@
-package syntacticParser.auto;
+package syntacticParser.auto.descentVersion;
 
 import java.io.FileReader;
 
 public class Main{
    public static void main(String[] args) throws Exception {
-      SynacticParser asint = new SynacticParser(new FileReader("examples/ejemplo.alex"));
+      SynacticParser asint = new SynacticParser(new FileReader("Parser/examples/ejemplo.alex"));
 	  asint.enable_tracing();
 	  asint.S();
    }

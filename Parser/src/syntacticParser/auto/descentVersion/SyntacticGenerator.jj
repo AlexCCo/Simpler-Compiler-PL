@@ -2,7 +2,7 @@ options  {
   STATIC=false;
 }  
 PARSER_BEGIN(SynacticParser)
-package syntacticParser.auto;
+package syntacticParser.auto.descentVersion;
 
 public class SynacticParser {}
 PARSER_END(SynacticParser)

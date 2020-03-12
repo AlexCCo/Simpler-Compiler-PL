@@ -3,7 +3,7 @@
  *          Tomás Golomb Duran
  *          Alejandro Cancelo Correia
  *
- *  El parseador sintactico
+ *  El parseador sintactico manual LL(1) descendente predictivo recursivo
  */
 package syntacticParser.manual;
 
@@ -14,7 +14,6 @@ public abstract class SyntacticParser {
    private LexicalUnit token;
 
    public SyntacticParser(){
-      //scanner = new LexicalScanner(input);
       nextToken();
    }
 

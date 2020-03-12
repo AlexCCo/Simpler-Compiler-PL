@@ -1,5 +1,9 @@
+/**
+ * Alumnos:
+ *          Tomás Golomb Duran
+ *          Alejandro Cancelo Correia
+ */
 package syntacticParser.manual;
-
 
 public class SyntacticError extends Exception {
     /**
@@ -14,5 +18,9 @@ public class SyntacticError extends Exception {
     public SyntacticError(int row, int column, String expected, String extra){
         super("Expected " + expected + " in row: " + row + " column: " + column + "\n" +
                 extra);
+    }
+
+    public SyntacticError(String msg){
+        super(msg);
     }
 }

@@ -1,5 +1,7 @@
 package lexicalScanner;
 
+import java_cup.runtime.Symbol;
+
 /**
  * Students:
  *          Tomás Golomb Durán
@@ -8,7 +10,7 @@ package lexicalScanner;
  * Basic structure of a token
  */
 
-public abstract class LexicalUnit {
+public abstract class LexicalUnit{
     private LexicalClass clase;
     private int row;
     private int column;
