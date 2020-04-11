@@ -22,7 +22,7 @@ deterministic automaton*** and because of that we have to use ***regular express
 
 ## Language Definition
 
-We will consider a programming languague with the following requisites:
+We will consider a programming language with the following requisites:
 
 - It will have a section for declaring variables and another section for writing instructions. Both section will be separated by ```&&```
 - The section for declaring variable it is made up by one or more declaration separated by ```;```
@@ -32,7 +32,7 @@ We will consider a programming languague with the following requisites:
     - real
     - bool
   - The variable name has to have the following structure: 
-    - It has to start with a letter and before that it can have a sequence of zero or more letters, digits or underscore ( **_** )
+    - It has to start with a letter and can be followed by a sequence of zero or more letters, digits or underscore ( **_** )
 - The section for writing instructions it is made up by one or more instructions separated by ```;``` and each 
 instruction must be an assignment.
   - Each assignment is in the form of ```*variable name* = *expression*;```
@@ -74,13 +74,13 @@ Characters from lower case a to z and form capitalize A to Z
 
 - digit = ```[0-9]```
 
-The ten digit from the decimal base
+The ten digits from the decimal base
 
-- integerOr0 = ```([1-9]digit\* | 0)```
+- integerOr0 = ```([1-9]digit* | 0)```
 
 A number starting with all but 0 and followed by a sequence of digits or just the 0
 
-- decimal = ```.((digit)\*[1-9] | 0)```
+- decimal = ```.((digit)*[1-9] | 0)```
 
 It's the decimal part of a real number. It starts with a dot character and is followed by a sequence of numbers not allowing non
 meaningless zeroes to the right or just he number 0
@@ -112,12 +112,12 @@ The name of the class is really intuitive of what set of elements it contains:
 - type = ```(int | real | bool)```
 - integerNum = ```sign?integerOr0```
 - realNum = ```integerNum(decimal | exponencial | decimal·exponencial)```
-- varName = ```character(character | digit | _)\*```
+- varName = ```character(character | digit | _)*```
 - eoi (End Of Instruction o declaration) = ```;```
 - eod (End Of Declarations) = ```&&```
 - openParenthesis = ```(```
 - closeParenthesis = ```)```
-- ignorable = ```(\n | \r | EOF)```
+- ignorable = ```(\n | \r | EOF | Space | \t)```
 
 Once we define all our ***lexical classes***, the next step is create the ***finite deterministic automaton*** whose job is iterate
 character by character through all our program file looking trying to create the corresponding token
