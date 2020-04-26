@@ -1,0 +1,102 @@
+options  {
+  STATIC=false;
+}  
+PARSER_BEGIN(ConstructorASTTiny)
+package constructorast;
+
+import ascendent.*;
+
+
+public class ConstructorASTTiny {
+   private ASTiny as = new ASTiny();
+   private final static int MAS=0;
+   private final static int MENOS=1;
+   private final static int POR=2;
+   private final static int DIV=3;
+   private E mkexp(int op, E opnd1, E opnd2){
+     switch(op) {
+      case MAS: return as.suma(opnd1,opnd2);
+      case MENOS: return as.resta(opnd1,opnd2);
+      case POR: return as.mul(opnd1,opnd2);
+      case DIV: return as.div(opnd1,opnd2);
+      default: return null;
+     }
+   }
+}
+PARSER_END(ConstructorASTTiny)
+  TOKEN:{<#sign:["+","-"]>}
+
+  TOKEN:{<#digit:["0"-"9"]>}
+  TOKEN:{<#posDigit:["1"-"9"]>}
+  TOKEN:{<#char:["a"-"z","A"-"Z"]>}
+  TOKEN:{<#intOr0:<posDigit><digit>*|"0">}
+  TOKEN:{<#float:"."(<digit>*<posDigit>|"0")>}
+  TOKEN:{<#exp:("e"|"E")<sign>?<intOr0>>}
+
+  SKIP:{<["\t"," ","\r","\b","\n"]>}  
+  SKIP:{<"#"(~["\n"])*>}  
+
+  TOKEN:{<OPERATOR_ADD:"+">}
+  TOKEN:{<OPERATOR_MINUS:"-">}
+  TOKEN:{<OPERATOR_DIV:"/">}
+  TOKEN:{<OPERATOR_MUL:"*">}
+  TOKEN:{<OPERATOR_LESS_THAN:"<">}
+  TOKEN:{<OPERATOR_LESS_EQUAL_THAN:"<=">}
+  TOKEN:{<OPERATOR_GREATER_THAN:">=">}
+  TOKEN:{<OPERATOR_GREATER_EQUAL_THAN:">=">}
+  TOKEN:{<OPERATOR_ASSIGNMENT:"=">}
+  TOKEN:{<OPERATOR_EQUAL:"==">}
+  TOKEN:{<OPERATOR_NOT_EQUAL:"!=">}
+  TOKEN:{<LOGICAL_OR:"or">}
+  TOKEN:{<LOGICAL_AND:"and">}
+  TOKEN:{<LOGICAL_NOT:"not">}
+  TOKEN:{<INTEGER_NUM:<sign>?<intOr0>>}
+  TOKEN:{<REAL_NUM:<INTEGER_NUM>(<float>|<exp>|<float><exp>>}
+  TOKEN:{<VAR_NAME:<char>(<char>|<digit>|_)*>}
+  TOKEN:{<REAL_TYPE:"real">}
+  TOKEN:{<INT_TYPE:"int">}
+  TOKEN:{<BOOL_TYPE:"bool">}
+  TOKEN:{<BOOLEAN:"true"|"false">}
+  TOKEN:{<EOI:";">}
+  TOKEN:{<EOD:"&&">}
+  TOKEN:{<OPEN_PARENTHESIS:"(">}
+  TOKEN:{<CLOSE_PARENTHESIS:")">}
+
+  
+  S Sp()    : {S ast;} {ast=S() <EOF> {return ast;}}
+  S S()     : {ResulLDs ds; E aDeE0;} {<evalua> aDeE0=E0() ds=Ds()
+                  {if (ds.hayDefinicion())
+                      return as.evaluaDonde(aDeE0,ds.a());
+                   else
+                      return as.evalua(aDeE0);}}
+    
+  ResulLDs Ds()   : {LDs aOfLDs;} 
+                     {<donde> aOfLDs = LDs() {return new ResulLDs(aOfLDs);} | 
+                      {return new ResulLDs();} }
+  
+  LDs LDs()  : {ResulD d; LDs aOfRLDs;} {d=D() aOfRLDs=RLDs(as.cSimple(d.id(),d.exp())) 
+                       {return aOfRLDs;}}
+  LDs RLDs(LDs ahOfRLDs0) : {ResulD d; LDs aOfRLDs1;} 
+                                {"," d=D() aOfRLDs1=RLDs(as.cCompuesta(ahOfRLDs0,d.id(),d.exp())) 
+                                  {return aOfRLDs1;}| 
+                                  {return ahOfRLDs0;} }
+  ResulD D()    : {Token id; E aOfE0;} {id=<identificador> "=" aOfE0=E0() 
+                           {return new ResulD(id.image,aOfE0);}}
+  E E0()   : {E aOfE1,aOfRE0;} {aOfE1=E1() aOfRE0=RE0(aOfE1) {return aOfRE0;}}
+  E RE0(E ahOfRE0)  : {int op0; E aOfE1; E aOfRE0;} 
+                            {op0=OP0() aOfE1=E1() aOfRE0=RE0(mkexp(op0,ahOfRE0,aOfE1)) 
+                                  {return aOfRE0;}| 
+                                   {return ahOfRE0;} }
+  E E1()   : {E aOfE2,aOfRE1;} {aOfE2=E2() aOfRE1=RE1(aOfE2) {return aOfRE1;}}
+  E RE1(E ahOfRE1)  : {int op1; E aOfE2; E aOfRE1;} 
+                            {op1=OP1() aOfE2=E2() aOfRE1=RE1(mkexp(op1,ahOfRE1,aOfE2)) 
+                                  {return aOfRE1;}| 
+                                   {return ahOfRE1;} }
+  E E2()   : {Token t; E aOfE0;} 
+                  {t=<numeroEntero> {return as.entero(t.image);} | 
+                  t=<numeroReal> {return as.real(t.image);}| 
+                  t=<identificador> {return as.id(t.image);} | 
+                  "(" aOfE0=E0() ")" {return aOfE0;}} 
+  int OP0()  : {} {"+" {return MAS;}| "-" {return MENOS;}}
+  int OP1()  : {} {"*" {return POR;}| "/" {return DIV;}}
+  
