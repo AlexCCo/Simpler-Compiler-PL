@@ -1,0 +1,119 @@
+package ascendant.syntacticParser.auto.ascendentVersion;
+
+import java_cup.runtime.*;
+import ascendant.lexicalScanner.*;
+import ast.*;
+
+scan with {: return getScanner().next_token(); :};
+action code {:
+    private ASConstructor semantic = new ASConstructor();
+:};
+parser code {:
+   public void syntax_error(Symbol unidadLexica){
+     System.out.println("ERROR fila "+((LexicalUnitCUP)unidadLexica).row()+": Elemento inexperado "+unidadLexica.value);
+     System.exit(1);
+   }
+:};
+
+init with {:
+   LexicalScannerCUP alex = (LexicalScannerCUP)getScanner();
+:};
+
+terminal    OPERATOR_ADD, OPERATOR_MINUS, OPERATOR_DIV, OPERATOR_MUL, OPERATOR_LESS_THAN,
+            OPERATOR_LESS_EQUAL_THAN, OPERATOR_GREATER_THAN, OPERATOR_GREATER_EQUAL_THAN,
+            OPERATOR_EQUAL, OPERATOR_NOT_EQUAL, OPERATOR_ASSIGNMENT,
+            LOGICAL_OR, LOGICAL_AND, LOGICAL_NOT,
+            INTEGER_NUM, REAL_NUM, BOOLEAN,
+            VAR_NAME,
+            REAL_TYPE, INT_TYPE, BOOL_TYPE,
+            EOI, EOD,
+            OPEN_PARENTHESIS, CLOSE_PARENTHESIS;
+
+non terminal  S, SD, VAR, IS, INST, E0, E1, E2, E3, E4, opE1, opE2, opE3, opE4;
+
+S ::= SD EOD IS;
+
+SD ::= SD EOI VAR;
+SD ::= VAR;
+VAR ::= INT_TYPE VAR_NAME | BOOL_TYPE VAR_NAME | REAL_TYPE VAR_NAME;
+
+IS  ::=   IS EOI INST;
+IS  ::=  INST;
+INST  ::=  VAR_NAME OPERATOR_ASSIGNMENT E0
+        {: RESULT = semantic. :};
+
+
+
+E0  ::=  E1: aDeE1Uno OPERATOR_ADD E0: aDeE0
+        {:RESULT = semantic.suma(aDeE1Uno, aDeE0):};
+E0  ::=  E1: aDeE1Uno OPERATOR_MINUS E1: aDeE1Dos
+        {:RESULT = semantic.resta(aDeE1Uno, aDeE1Dos):};
+E0  ::=  E1: aDeE1
+        {:RESULT = aDeE1:};
+
+
+
+E1  ::=  E1: aDeE1 opE1: opTipo E2: aDeE2
+    {: RESULT = semantic.exp(opTipo, aDeE1, aDeE2) :};
+
+E1  ::=  E2: aDeE2
+        {:RESULT = aDeE2:}
+
+opE1 ::= LOGICAL_AND: aDeOpTipo
+             {: RESULT = aDeOpTipo :};
+opE1 ::= LOGICAL_OR: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+
+
+
+E2  ::=  E2: aDeE2 opE2: opTipo E3: aDeE3
+        {: RESULT = semantic.exp(opTipo, aDeE2, aDeE3) :};
+
+E2  ::=  E3: aDeE3
+        {: RESULT = aDeE3:};
+
+opE2 ::= OPERATOR_LESS_THAN: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+opE2 ::= OPERATOR_LESS_EQUAL_THAN: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+opE2 ::= OPERATOR_GREATER_THAN: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+opE2 ::= OPERATOR_GREATER_EQUAL_THAN: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+opE2 ::= OPERATOR_EQUAL: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+opE2 ::= OPERATOR_NOT_EQUAL: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+
+
+
+E3  ::=  E4: aDeE4Uno opE3: opTipo E4: aDeE4Dos
+          {: RESULT = semantic.exp(opTipo, aDeE4Uno, aDeE4Dos) :};
+E3  ::=  E4: aDeE4
+          {: RESULT = aDeE4:};
+
+opE3 ::= OPERATOR_DIV: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+opE3 ::= OPERATOR_MUL: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+
+
+
+E4  ::=  opE4: opTipo E4: aDeE4
+            {: RESULT = semantic.exp(opTipo, aDeE4) :};
+
+opE4 ::= LOGICAL_NOT: aDeOpTipo
+            {: RESULT = aDeOpTipo :};
+epE4 ::= OPERATOR_MINUS: aDeOpTipo
+            {: RESULT = aDeOpTipo:};
+
+E4  ::=  VAR_NAME: aDeVar
+           {: RESULT = semantic.numReal(aDeVar):};
+E4 ::=  BOOLEAN: aDeBoo
+           {: RESULT = semantic.numReal(aDeBoo):};
+E4 ::= INTEGER_NUM: aDeNE
+           {:RESULT = semantic.numEntero(aDeNE) :};
+E4 ::= REAL_NUM: aDeNR
+           {: RESULT = semantic.numReal(aDeNR):};
+E4  ::=  OPEN_PARENTHESIS E0: aDeE0 CLOSE_PARENTHESIS
+            {: RESULT =  aDeE0:};

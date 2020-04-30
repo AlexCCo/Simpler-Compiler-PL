@@ -4,7 +4,7 @@ options  {
 PARSER_BEGIN(ConstructorASTTiny)
 package constructorast;
 
-import ascendent.*;
+import descendant.*;
 
 
 public class ConstructorASTTiny {

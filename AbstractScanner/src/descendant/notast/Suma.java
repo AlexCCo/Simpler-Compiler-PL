@@ -1,4 +1,8 @@
-package ast;
+package descendant.notast;
+
+import ast.E;
+import ast.EBin.EBin;
+import ast.TipoE;
 
 public class Suma extends EBin {
    public Suma(E opnd1, E opnd2) {
