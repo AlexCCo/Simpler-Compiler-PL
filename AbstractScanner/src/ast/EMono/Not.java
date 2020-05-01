@@ -8,5 +8,10 @@ public class Not extends EMono {
         super(exp);
     }
 
-    public TipoE tipo() {return TipoE.NOT;}  
+    public TipoE tipo() {return TipoE.NOT;}
+
+    @Override
+    public String toString() {
+        return String.format("[EUnario]logicalNOT { %s }", this.opnd1().toString());
+    }
 }

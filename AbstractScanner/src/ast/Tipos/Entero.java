@@ -7,5 +7,10 @@ public class Entero extends Tipo {
 		super(v);   
 	}
 	
-	public TipoE tipo() {return TipoE.ENTERO;}    
+	public TipoE tipo() {return TipoE.ENTERO;}
+
+	@Override
+	public String toString() {
+		return String.format("[ETipo]numeroEntero { %s }", this.val());
+	}
 }

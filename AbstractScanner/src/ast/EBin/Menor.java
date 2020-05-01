@@ -9,4 +9,9 @@ public class Menor extends EBin {
     }     
 
     public TipoE tipo() {return TipoE.MENOR;}
+
+    @Override
+    public String toString() {
+        return String.format("[EBin]< { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+    }
 }

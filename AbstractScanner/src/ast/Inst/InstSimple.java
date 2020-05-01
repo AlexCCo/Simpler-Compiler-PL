@@ -14,5 +14,10 @@ public class InstSimple extends Inst {
 
 	public String id() {return id;}
 	public E exp() {return exp;}
-	public TipoInst tipo() {return TipoInst.INSTSIMPLE;} 
+	public TipoInst tipo() {return TipoInst.INSTSIMPLE;}
+
+	@Override
+	public String toString() {
+		return String.format("instruc { %s, %s %s }", this.id, System.lineSeparator(), this.exp.toString());
+	}
 }

@@ -9,4 +9,9 @@ public class MenorIgual extends EBin {
     }     
 
     public TipoE tipo() {return TipoE.MENORIG;}
+
+    @Override
+    public String toString() {
+        return String.format("[EBin]<= { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+    }
 }

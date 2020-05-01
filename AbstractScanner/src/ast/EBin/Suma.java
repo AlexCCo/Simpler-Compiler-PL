@@ -9,4 +9,9 @@ public class Suma extends EBin {
    }
    
    public TipoE tipo() {return TipoE.SUMA;}
+
+    @Override
+    public String toString() {
+        return String.format("[EBin]suma { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+    }
 }

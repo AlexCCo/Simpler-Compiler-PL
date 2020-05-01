@@ -10,4 +10,9 @@ public class Id extends E {
   }
   public String id() {return id;}
   public TipoE tipo() {return TipoE.ID;}
+
+  @Override
+  public String toString() {
+    return String.format("[ETipo]nombreVariable { %s }", this.id);
+  }
 }

@@ -7,5 +7,10 @@ public class Bool extends Tipo {
 		super(v);   
 	}
 	
-	public TipoE tipo() {return TipoE.BOOL;}    
+	public TipoE tipo() {return TipoE.BOOL;}
+
+	@Override
+	public String toString() {
+		return String.format("[ETipo]booleano { %s }", this.val());
+	}
 }

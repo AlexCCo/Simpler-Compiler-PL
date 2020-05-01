@@ -8,4 +8,10 @@ public class Mul extends EBin {
      super(opnd1,opnd2);  
    }     
    public TipoE tipo() {return TipoE.MUL;}
+
+
+    @Override
+    public String toString() {
+        return String.format("[EBin]mul { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+    }
 }

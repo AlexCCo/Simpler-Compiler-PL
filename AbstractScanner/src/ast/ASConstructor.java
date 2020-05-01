@@ -1,6 +1,9 @@
 package ast;
 
 
+import ast.Dec.Dec;
+import ast.Dec.DecComp;
+import ast.Dec.DecSimple;
 import ast.EBin.*;
 import ast.EMono.Negativo;
 import ast.EMono.Not;
@@ -39,7 +42,13 @@ public class ASConstructor {
 
 
     public Inst instruc(String arg1, E arg2){return new InstSimple(arg1, arg2); }
-    public InstComp inst_compuesta(Inst arg1, )
+    public InstComp inst_compuesta(Inst lInst, Inst newInst){return new InstComp(lInst, newInst);}
+
+    public Dec decl(String type, String varName){return new DecSimple(type, varName);}
+    public DecComp decs_compuesta(Dec lDec, Dec newDec){return new DecComp(lDec, newDec);}
+
+    public Program prog_completo(Dec lDec, Inst lInst){return new Program(lDec, lInst);}
+
     //funciones semanticas
     public E exp(TipoE ope, E arg1, E arg2){
         switch(ope){

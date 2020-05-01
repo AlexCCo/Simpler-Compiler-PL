@@ -9,4 +9,9 @@ public class Or extends EBin {
     }     
 
     public TipoE tipo() {return TipoE.OR;}
+
+    @Override
+    public String toString() {
+        return String.format("[EBin]logicalOR { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+    }
 }

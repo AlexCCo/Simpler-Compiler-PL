@@ -9,4 +9,9 @@ public class Comparacion extends EBin {
     }     
 
     public TipoE tipo() {return TipoE.COMPARACION;}
+
+    @Override
+    public String toString() {
+        return String.format("[EBin]== { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+    }
 }

@@ -7,5 +7,10 @@ public class Real extends Tipo {
 		super(v);  
 	}
 
-	public TipoE tipo() {return TipoE.REAL;}    
+	public TipoE tipo() {return TipoE.REAL;}
+
+	@Override
+	public String toString() {
+		return String.format("[ETipo]numeroReal { %s }", this.val());
+	}
 }

@@ -10,4 +10,5 @@ public abstract class Tipo extends E {
 	}
 
 	public String val() {return v;}
+
 }

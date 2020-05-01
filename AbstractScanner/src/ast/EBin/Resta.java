@@ -8,4 +8,9 @@ public class Resta extends EBin {
      super(opnd1,opnd2);  
    }     
    public TipoE tipo() {return TipoE.RESTA;}
+
+    @Override
+    public String toString() {
+        return String.format("[EBin]resta { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+    }
 }

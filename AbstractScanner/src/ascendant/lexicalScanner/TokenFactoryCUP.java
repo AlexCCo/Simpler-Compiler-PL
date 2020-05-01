@@ -86,18 +86,18 @@ public class TokenFactoryCUP {
                 return new LexicalUnitCUP(lexicalScanner.getRow(), LexicalClass.LOGICAL_NOT, LexicalClass.valueOf(LexicalClass.LOGICAL_NOT));
             case "true":
             case "false":
-                return new LexicalUnitCUP(lexicalScanner.getRow(), LexicalClass.BOOLEAN,  LexicalClass.valueOf(LexicalClass.BOOLEAN));
+                return new LexicalUnitCUP(lexicalScanner.getRow(), LexicalClass.BOOLEAN,  lexicalScanner.getLexeme());
             default:
-                return new LexicalUnitCUP(lexicalScanner.getRow(), LexicalClass.VAR_NAME,  LexicalClass.valueOf(LexicalClass.VAR_NAME));
+                return new LexicalUnitCUP(lexicalScanner.getRow(), LexicalClass.VAR_NAME, lexicalScanner.getLexeme());
         }
     }
 
     public LexicalUnitCUP tokenInteger() {
-        return new LexicalUnitCUP(lexicalScanner.getRow(), LexicalClass.INTEGER_NUM,  LexicalClass.valueOf(LexicalClass.INTEGER_NUM));
+        return new LexicalUnitCUP(lexicalScanner.getRow(), LexicalClass.INTEGER_NUM,  lexicalScanner.getLexeme());
     }
 
     public LexicalUnitCUP tokenReal() {
-        return new LexicalUnitCUP(lexicalScanner.getRow(), LexicalClass.REAL_NUM,  LexicalClass.valueOf(LexicalClass.REAL_NUM));
+        return new LexicalUnitCUP(lexicalScanner.getRow(), LexicalClass.REAL_NUM,  lexicalScanner.getLexeme());
     }
 
     public LexicalUnitCUP tokenOpenParenthesis() {

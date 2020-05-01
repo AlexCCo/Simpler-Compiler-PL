@@ -14,5 +14,6 @@ public abstract class Dec {
 	public String id() {return id;}
 	public String valor() {return valor;}
 	public Dec decs() {throw new UnsupportedOperationException("decs");}
-	public abstract TipoDec tipo(); 
+	public abstract TipoDec tipo();
+
 }

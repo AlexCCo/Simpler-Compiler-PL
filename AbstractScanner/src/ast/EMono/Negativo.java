@@ -8,5 +8,10 @@ public class Negativo extends EMono {
         super(exp);
     }
 
-    public TipoE tipo() {return TipoE.NEGATIVO;}  
+    public TipoE tipo() {return TipoE.NEGATIVO;}
+
+    @Override
+    public String toString() {
+        return String.format("[EUnario]negativo { %s }", this.opnd1().toString());
+    }
 }
