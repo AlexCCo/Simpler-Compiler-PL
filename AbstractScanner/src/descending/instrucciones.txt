@@ -4,7 +4,7 @@
     java -cp javacc.jar javacc Tiny.jj
 
 2. En Main.java escribir la dirección del archivo a evaluar
-    eval = new Evaluador(new FileReader("examples/ejemplo.alex"));
+    eval = new Evaluador(new FileReader("AbstractScanner/src/examples/ejemplo.alex"));
 
 3. Ejecutar el programa Main
     [nosotros usamos el ide IntelliJ IDEA con jsdk 8.0]
