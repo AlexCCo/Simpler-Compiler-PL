@@ -4,7 +4,7 @@
 // Fri May 01 02:40:16 CEST 2020
 //----------------------------------------------------
 
-package ascendant.syntacticParser.auto.ascendentVersion;
+package ascending.syntacticParser.auto.ascendentVersion;
 
 /** CUP generated class containing symbol constants. */
 public class LexicalClass {

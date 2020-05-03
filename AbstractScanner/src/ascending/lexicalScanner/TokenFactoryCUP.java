@@ -1,6 +1,6 @@
-package ascendant.lexicalScanner;
+package ascending.lexicalScanner;
 
-import ascendant.syntacticParser.auto.ascendentVersion.LexicalClass;
+import ascending.syntacticParser.auto.ascendentVersion.LexicalClass;
 /**
  * Students:
  *          Tomás Golomb Durán

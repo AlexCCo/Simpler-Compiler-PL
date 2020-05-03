@@ -1,4 +1,4 @@
-package ascendant.syntacticParser.auto.ascendentVersion;
+package ascending.syntacticParser.auto.ascendentVersion;
 
 import ascendant.lexicalScanner.LexicalScannerCUP;
 

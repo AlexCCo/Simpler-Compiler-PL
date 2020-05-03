@@ -1,4 +1,4 @@
-package ascendant.lexicalScanner;
+package ascending.lexicalScanner;
 
 
 public class LexicalScanner {
