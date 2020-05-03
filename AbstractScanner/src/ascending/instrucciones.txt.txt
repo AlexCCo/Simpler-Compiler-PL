@@ -1,0 +1,20 @@
+
+
+1. Generar el código con CUP del SYNTACTIC PARSER en
+   /syntacticParser/auto/ascendentVersion con el siguiente comando:
+    java -cp cup.jar java_cup.Main -parser SyntacticParser -symbols LexicalClass -nopositions SyntacticGeneratorASC.cup
+
+2. Copiar de /lexicalScanner/LexicalClass.java la función valueOf(...) en
+   /syntacticParser/auto/ascendentVersion/LexicalClass.java
+
+3. En /syntacticParser/auto/ascendentVersion/Main.java escribir la dirección del archivo a evaluar
+    eval = new Evaluador(new FileReader("AbstractScanner/src/examples/ejemplo.alex"));
+
+4. Ejecutar el programa Main
+    [nosotros usamos el ide IntelliJ IDEA con jsdk 8.0]
+
+5. Salida de ejemplo:
+programa {
+ 	SD ( DecComp( DecComp( DecSimple ( real, peso ), DecSimple ( int, hola ) ), DecSimple ( bool, pesado ) ) ),
+ 	IS ( InstComp ( InstSimple ( peso, DIV ( MUL ( REAL ( 45.0 ), REAL ( 12e-56 ) ), REAL ( -2.05 ) ) ), InstSimple ( pesado, OR ( > ( var_name ( peso ), REAL ( 10.0 ) ), <= ( DIV ( var_name ( peso ), INT ( 2 ) ), REAL ( +0.0 ) ) ) ) ) )
+}
