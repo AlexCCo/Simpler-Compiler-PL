@@ -18,6 +18,6 @@ public class InstSimple extends Inst {
 
 	@Override
 	public String toString() {
-		return String.format("instruc { %s, %s %s }", this.id, System.lineSeparator(), this.exp.toString());
+		return String.format("instruc { %s, %s }", this.id, this.exp.toString());
 	}
 }

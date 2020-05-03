@@ -27,6 +27,6 @@ public class InstComp extends Inst {
 
 	@Override
 	public String toString() {
-		return String.format("inst_compuesta { {%s, %s}, %s }", this.id, this.exp, this.decs.toString());
+		return String.format("inst_compuesta { %s, instruc {%s, %s} }", this.decs.toString(), this.id, this.exp);
 	}
 }

@@ -1,8 +1,8 @@
-package ascendant.syntacticParser.auto.ascendentVersion;
+package ascending.syntacticParser.auto.ascendentVersion;
 /* java -cp cup.jar java_cup.Main -parser SyntacticParser -symbols LexicalClass -nopositions SyntacticGeneratorASC.cup */
 
 import java_cup.runtime.*;
-import ascendant.lexicalScanner.*;
+import ascending.lexicalScanner.*;
 import ast.*;
 import ast.Dec.*;
 import ast.Inst.*;
@@ -36,7 +36,7 @@ terminal String VAR_NAME,
 non terminal Program S;
 non terminal Dec SD, VAR;
 non terminal Inst IS, INST;
-non terminal E E0, E1, E2, E3, E4;
+non terminal E E0, E1, E2, E3, E4, E5;
 non terminal TipoE opE1, opE2, opE3, opE4;
 
 
@@ -124,21 +124,26 @@ opE3 ::= OPERATOR_MUL
 
 
 
-E4  ::=  opE4: opTipo E4: aDeE4
-            {: RESULT = semantic.exp(opTipo, aDeE4); :};
+E4  ::=  opE4: opTipo E5: aDeE5
+            {: RESULT = semantic.exp(opTipo, aDeE5); :};
+E4 ::= E5: aDeE5
+        {: RESULT = aDeE5; :};
 
 opE4 ::= LOGICAL_NOT
             {: RESULT = TipoE.NOT; :};
 epE4 ::= OPERATOR_MINUS
             {: RESULT = TipoE.NEGATIVO; :};
 
-E4  ::=  VAR_NAME: aDeVar
+
+
+
+E5  ::=  VAR_NAME: aDeVar
            {: RESULT = semantic.varName(aDeVar); :};
-E4 ::=  BOOLEAN: aDeBoo
+E5 ::=  BOOLEAN: aDeBoo
            {: RESULT = semantic.booleano(aDeBoo); :};
-E4 ::= INTEGER_NUM: aDeNE
+E5 ::= INTEGER_NUM: aDeNE
            {:RESULT = semantic.numEntero(aDeNE); :};
-E4 ::= REAL_NUM: aDeNR
+E5 ::= REAL_NUM: aDeNR
            {: RESULT = semantic.numReal(aDeNR); :};
-E4  ::=  OPEN_PARENTHESIS E0: aDeE0 CLOSE_PARENTHESIS
+E5  ::=  OPEN_PARENTHESIS E0: aDeE0 CLOSE_PARENTHESIS
             {: RESULT =  aDeE0; :};

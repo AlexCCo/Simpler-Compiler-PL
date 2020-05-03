@@ -20,6 +20,6 @@ public class DecComp extends Dec {
 
 	@Override
 	public String toString() {
-		return String.format("dec_compuesta { {%s, %s}, %s }", this.id(), this.valor(), this.decs.toString());
+		return String.format("dec_compuesta { %s, dec {%s, %s} }", this.decs.toString(), this.id(), this.valor());
 	}
 }
