@@ -1,0 +1,164 @@
+options  {
+  STATIC=false;
+}  
+
+PARSER_BEGIN(Evaluador)
+package descending;
+
+import ast.*;
+import ast.Dec.*;
+import ast.EBin.*;
+import ast.EMono.*;
+import ast.Inst.*;
+import ast.Tipos.*;
+
+public class Evaluador {}
+
+PARSER_END(Evaluador)
+
+  TOKEN:{<#sign:["+","-"]>}
+
+  TOKEN:{<#digit:["0"-"9"]>}
+  TOKEN:{<#posDigit:["1"-"9"]>}
+  TOKEN:{<#chr:["a"-"z","A"-"Z"]>}
+  TOKEN:{<#intOr0:<posDigit>(<digit>)*|"0">}
+  TOKEN:{<#fl0at:"."((<digit>)*<posDigit>|"0")>}
+  TOKEN:{<#exp:("e"|"E")(<sign>)?<intOr0>>}
+
+  SKIP:{<["\t"," ","\r","\b","\n"]>}  
+  SKIP:{<"#"(~["\n"])*>}  
+
+  TOKEN:{<OPERATOR_ADD:"+">}
+  TOKEN:{<OPERATOR_MINUS:"-">}
+  TOKEN:{<OPERATOR_DIV:"/">}
+  TOKEN:{<OPERATOR_MUL:"*">}
+  TOKEN:{<OPERATOR_LESS_THAN:"<">}
+  TOKEN:{<OPERATOR_LESS_EQUAL_THAN:"<=">}
+  TOKEN:{<OPERATOR_GREATER_THAN:">">}
+  TOKEN:{<OPERATOR_GREATER_EQUAL_THAN:">=">}
+  TOKEN:{<OPERATOR_ASSIGNMENT:"=">}
+  TOKEN:{<OPERATOR_EQUAL:"==">}
+  TOKEN:{<OPERATOR_NOT_EQUAL:"!=">}
+  TOKEN:{<LOGICAL_OR:"or">}
+  TOKEN:{<LOGICAL_AND:"and">}
+  TOKEN:{<LOGICAL_NOT:"not">}
+  TOKEN:{<INTEGER_NUM:(<sign>)?<intOr0>>}
+  TOKEN:{<REAL_NUM:<INTEGER_NUM>(<fl0at>|<exp>|<fl0at><exp>)>}
+  TOKEN:{<REAL_TYPE:"real">}
+  TOKEN:{<INT_TYPE:"int">}
+  TOKEN:{<BOOL_TYPE:"bool">}
+  TOKEN:{<BOOLEAN:"true"|"false">}
+  TOKEN:{<EOI:";">}
+  TOKEN:{<EOD:"&&">}
+  TOKEN:{<OPEN_PARENTHESIS:"(">}
+  TOKEN:{<CLOSE_PARENTHESIS:")">}
+  TOKEN:{<VAR_NAME:<chr>(<chr>|<digit>|"_")*>}
+
+  Program Sp()    : {Program ast;} {ast=S() <EOF> {return ast;}}
+
+  Program S()   : {Dec SDa; Inst ISa;} 
+                  {SDa=SD() <EOD> ISa=IS() {return ASConstructor.prog_completo(SDa, ISa);}}
+
+
+  Dec SD()   : {Dec VARa; Dec RSDa;}
+                  {VARa=VAR() RSDa=RSD(VARa) {return  RSDa;}} 
+
+  Dec RSD(Dec ah)   : {Dec VARa; Dec RSD1a;}
+                      {<EOI> VARa=VAR() RSD1a=RSD(ASConstructor.decs_compuesta(ah, VARa)) {return RSD1a;} |
+                      {return ah;}}
+
+  Dec VAR()   : {String tp; Token nv;}
+                 {tp=TP() nv=<VAR_NAME> {return  ASConstructor.decl(tp, nv.image);}}
+
+
+  String TP()    : {Token tp;} 
+                    {tp=<REAL_TYPE> {return tp.image;} |
+                      tp=<INT_TYPE> {return tp.image;} |
+                      tp=<BOOL_TYPE> {return tp.image;}}
+
+
+  Inst IS()   : {Inst INSTa; Inst RISa;} 
+                  {INSTa=INST() RISa=RIS(INSTa) {return RISa;}} 
+
+  Inst RIS(Inst ah)   : {Inst RIS1a; Inst INSTa;}
+                      {<EOI> INSTa=INST() RIS1a=RIS(ASConstructor.inst_compuesta(INSTa,ah)) {return RIS1a;} |
+                      {return ah;}} 
+
+  Inst INST()   : {Token nv; E E0a;}
+            {nv=<VAR_NAME> <OPERATOR_ASSIGNMENT> E0a=E0() {return  ASConstructor.instruc(nv.image, E0a);}}
+
+
+  E E0()   : {E R0a;}
+              {R0a=R0(E1()) {return R0a;}}
+
+  E R0(E ah)   : {E E01a;}
+                  {<OPERATOR_ADD> E01a=E0() {return ASConstructor.exp(TipoE.SUMA, ah, E01a);} |
+                    <OPERATOR_MINUS> E01a=E1() {return ASConstructor.exp(TipoE.RESTA, ah, E01a);} |
+                    {return ah;}} 
+
+
+  E E1()   : {E R1a;} 
+              {R1a=R1(E2()) {return R1a;}}
+
+  E R1(E ah)   : {E R1a; E E2a; TipoE opE1a;} 
+                  {opE1a=opE1() E2a=E2() R1a=R1(ASConstructor.exp(opE1a, ah, E2a)) {return R1a;} | 
+                  {return ah;}}
+
+
+  E E2()   : {E E3a; E R2a;} 
+              {E3a=E3() R2a=R2(E3a) {return R2a;}} 
+
+  E R2(E ah)   : {E E3a; E R2a; TipoE opE2a;}
+                  {opE2a=opE2() E3a=E3() R2a=R2(ASConstructor.exp(opE2a, ah, E3a)) {return R2a;} | 
+                  {return ah;}} 
+
+
+  E E3()   : {E E4a; E R3a;} 
+              {E4a=E4() R3a=R3(E4a) {return R3a;}} 
+
+  E R3(E ah)   : {TipoE opE3a; E E4a;} 
+                  {opE3a=opE3() E4a=E4() {return ASConstructor.exp(opE3a, ah, E4a);} | 
+                  {return ah;}} 
+
+
+  E E4()   : {TipoE opE4a; E E5a;}
+                  {opE4a=opE4() E5a=E5() {return ASConstructor.exp(opE4a, E5a);} | 
+                    E5a=E5() {return E5a;}} 
+
+
+  E E5()   : {E E5a; E terminala;} 
+                  {terminala=terminal() {return terminala;} | 
+                    <OPEN_PARENTHESIS> E5a=E0() <CLOSE_PARENTHESIS> {return E5a;}}
+
+
+  E terminal()  : {Token t;} {t=<BOOLEAN> {return ASConstructor.booleano(t.image);} |
+                                t=<VAR_NAME> {return ASConstructor.varName(t.image);} |
+                                t=<INTEGER_NUM> {return ASConstructor.numEntero(t.image);} |
+                                t=<REAL_NUM> {return ASConstructor.numReal(t.image);}}
+
+
+  TipoE opE1()  : {} {<LOGICAL_AND> {return TipoE.AND;} |
+                     <LOGICAL_OR> {return TipoE.OR;}}
+
+  TipoE opE2()  : {} {<OPERATOR_LESS_THAN> {return TipoE.MENOR;} |
+                    <OPERATOR_LESS_EQUAL_THAN> {return TipoE.MENORIG;} |
+                    <OPERATOR_GREATER_THAN> {return TipoE.MAYOR;} |
+                    <OPERATOR_GREATER_EQUAL_THAN> {return TipoE.MAYORIG;} |
+                    <OPERATOR_EQUAL> {return TipoE.COMPARACION;} |
+                    <OPERATOR_NOT_EQUAL> {return TipoE.DISTINTO;}}
+
+  TipoE opE3()  : {} {<OPERATOR_MUL> {return TipoE.MUL;} |
+                    <OPERATOR_DIV> {return TipoE.DIV;}}
+                    
+  TipoE opE4()  : {} {<OPERATOR_MINUS> {return TipoE.RESTA;} |
+                    <LOGICAL_NOT> {return TipoE.NOT;}}
+
+
+
+
+
+                    
+
+
+
+  
