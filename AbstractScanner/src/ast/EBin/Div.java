@@ -11,6 +11,6 @@ public class Div extends EBin {
 
     @Override
     public String toString() {
-        return String.format("[EBin]div { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+        return String.format("DIV ( %s, %s )", this.opnd1().toString(), this.opnd2().toString());
     }
 }

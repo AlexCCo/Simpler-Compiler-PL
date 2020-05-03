@@ -11,6 +11,6 @@ public class Real extends Tipo {
 
 	@Override
 	public String toString() {
-		return String.format("[ETipo]numeroReal { %s }", this.val());
+		return String.format("REAL ( %s )", this.val());
 	}
 }

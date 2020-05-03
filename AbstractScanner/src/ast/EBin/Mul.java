@@ -12,6 +12,6 @@ public class Mul extends EBin {
 
     @Override
     public String toString() {
-        return String.format("[EBin]mul { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+        return String.format("MUL ( %s, %s )", this.opnd1().toString(), this.opnd2().toString());
     }
 }

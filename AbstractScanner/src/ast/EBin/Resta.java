@@ -11,6 +11,6 @@ public class Resta extends EBin {
 
     @Override
     public String toString() {
-        return String.format("[EBin]resta { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+        return String.format("SUB ( %s, %s )", this.opnd1().toString(), this.opnd2().toString());
     }
 }

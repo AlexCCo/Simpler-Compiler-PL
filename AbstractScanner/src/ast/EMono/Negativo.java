@@ -12,6 +12,6 @@ public class Negativo extends EMono {
 
     @Override
     public String toString() {
-        return String.format("[EUnario]negativo { %s }", this.opnd1().toString());
+        return String.format("- ( %s )", this.opnd1().toString());
     }
 }

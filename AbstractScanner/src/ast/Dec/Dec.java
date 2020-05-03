@@ -3,7 +3,7 @@ package ast.Dec;
 import ast.TipoDec;
 
 public abstract class Dec {
-	private String id;
+/*	private String id;
 	private String valor;
 
 	public Dec(String id, String valor) {
@@ -12,8 +12,9 @@ public abstract class Dec {
 	}
 
 	public String id() {return id;}
-	public String valor() {return valor;}
+	public String valor() {return valor;}*/
 	public Dec decs() {throw new UnsupportedOperationException("decs");}
 	public abstract TipoDec tipo();
+	public abstract String toString();
 
 }

@@ -14,7 +14,7 @@ public class Program {
 
     @Override
     public String toString() {
-        return String.format("programa { %s \t%s, %s \t%s %s}", System.lineSeparator(),
+        return String.format("programa { %s \tSD ( %s ), %s \tIS ( %s ) %s}", System.lineSeparator(),
                                                             this.seccionDeclaraciones.toString(),
                                                             System.lineSeparator(),
                                                             this.seccionInstruccicones.toString(),

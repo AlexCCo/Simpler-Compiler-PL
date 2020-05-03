@@ -64,7 +64,7 @@ PARSER_END(Evaluador)
                   {VARa=VAR() RSDa=RSD(VARa) {return  RSDa;}} 
 
   Dec RSD(Dec ah)   : {Dec VARa; Dec RSD1a;} 
-                      {<EOI> VARa=VAR() RSD1a=RSD(ASConstructor.decs_compuesta(VARa, ah)) {return RSD1a;} | 
+                      {<EOI> VARa=VAR() RSD1a=RSD(ASConstructor.decs_compuesta(ah, VARa)) {return RSD1a;} |
                       {return ah;}} 
 
   Dec VAR()   : {String tp; Token nv;}
@@ -81,17 +81,17 @@ PARSER_END(Evaluador)
                   {INSTa=INST() RISa=RIS(INSTa) {return RISa;}} 
 
   Inst RIS(Inst ah)   : {Inst RIS1a; Inst INSTa;}
-                      {<EOI> INSTa=INST() RIS1a=RIS(ASConstructor.inst_compuesta(INSTa, ah)) {return RIS1a;} | 
+                      {<EOI> INSTa=INST() RIS1a=RIS(ASConstructor.inst_compuesta(INSTa,ah)) {return RIS1a;} |
                       {return ah;}} 
 
   Inst INST()   : {Token nv; E E0a;}
             {nv=<VAR_NAME> <OPERATOR_ASSIGNMENT> E0a=E0() {return  ASConstructor.instruc(nv.image, E0a);}}
 
 
-  E E0()   : {E R0a;} 
-              {R0a=R0(E1()) {return R0a;}} 
+  E E0()   : {E R0a;}
+              {R0a=R0(E1()) {return R0a;}}
 
-  E R0(E ah)   : {E E01a;} 
+  E R0(E ah)   : {E E01a;}
                   {<OPERATOR_ADD> E01a=E0() {return ASConstructor.exp(TipoE.SUMA, ah, E01a);} |
                     <OPERATOR_MINUS> E01a=E1() {return ASConstructor.exp(TipoE.RESTA, ah, E01a);} |
                     {return ah;}} 
@@ -121,14 +121,14 @@ PARSER_END(Evaluador)
                   {return ah;}} 
 
 
-  E E4()   : {E E5a; TipoE opE4a;} 
+  E E4()   : {TipoE opE4a; E E5a;}
                   {opE4a=opE4() E5a=E5() {return ASConstructor.exp(opE4a, E5a);} | 
                     E5a=E5() {return E5a;}} 
 
 
   E E5()   : {E E5a; E terminala;} 
                   {terminala=terminal() {return terminala;} | 
-                    E5a=E0() {return E5a;}} 
+                    <OPEN_PARENTHESIS> E5a=E0() <CLOSE_PARENTHESIS> {return E5a;}}
 
 
   E terminal()  : {Token t;} {t=<BOOLEAN> {return ASConstructor.booleano(t.image);} |
@@ -137,21 +137,21 @@ PARSER_END(Evaluador)
                                 t=<REAL_NUM> {return ASConstructor.numReal(t.image);}}
 
 
-  TipoE opE1()  : {} {<OPERATOR_ADD> {return TipoE.SUMA;} |
-                     <OPERATOR_MINUS> {return TipoE.RESTA;}}
+  TipoE opE1()  : {} {<LOGICAL_AND> {return TipoE.AND;} |
+                     <LOGICAL_OR> {return TipoE.OR;}}
 
-  TipoE opE2()  : {} {<OPERATOR_LESS_THAN> {return TipoE.MAYOR;} |
-                    <OPERATOR_LESS_EQUAL_THAN> {return TipoE.MAYORIG;} |
-                    <OPERATOR_GREATER_THAN> {return TipoE.MENOR;} |
-                    <OPERATOR_GREATER_EQUAL_THAN> {return TipoE.MENORIG;} |
+  TipoE opE2()  : {} {<OPERATOR_LESS_THAN> {return TipoE.MENOR;} |
+                    <OPERATOR_LESS_EQUAL_THAN> {return TipoE.MENORIG;} |
+                    <OPERATOR_GREATER_THAN> {return TipoE.MAYOR;} |
+                    <OPERATOR_GREATER_EQUAL_THAN> {return TipoE.MAYORIG;} |
                     <OPERATOR_EQUAL> {return TipoE.COMPARACION;} |
                     <OPERATOR_NOT_EQUAL> {return TipoE.DISTINTO;}}
 
   TipoE opE3()  : {} {<OPERATOR_MUL> {return TipoE.MUL;} |
                     <OPERATOR_DIV> {return TipoE.DIV;}}
                     
-  TipoE opE4()  : {} {<OPERATOR_MINUS> {return TipoE.NOT;} |
-                    <LOGICAL_NOT> {return TipoE.RESTA;}}
+  TipoE opE4()  : {} {<OPERATOR_MINUS> {return TipoE.RESTA;} |
+                    <LOGICAL_NOT> {return TipoE.NOT;}}
 
 
 

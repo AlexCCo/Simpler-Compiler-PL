@@ -3,23 +3,19 @@ package ast.Dec;
 import ast.TipoDec;
 
 public class DecComp extends Dec {
-	private Dec decs;
+	private Dec dec1;
+	private Dec dec2;
 
-	public DecComp(Dec decs, String id, String valor) {
-		super(id, valor);
-		this.decs = decs;
+	public DecComp(Dec dec1, Dec dec2) {
+		this.dec1 = dec1;
+		this.dec2 = dec2;
 	}
 
-	public DecComp(Dec decs, Dec newDec) {
-		super(newDec.id(), newDec.valor());
-		this.decs = decs;
-	}
-
-	public Dec decs() {return decs;}
+	public Dec decs() {return this;}
 	public TipoDec tipo() {return TipoDec.DECCOMPUESTA;}
 
 	@Override
 	public String toString() {
-		return String.format("dec_compuesta { {%s, %s}, %s }", this.id(), this.valor(), this.decs.toString());
+		return String.format("DecComp( %s, %s )", this.dec1, this.dec2.toString());
 	}
 }

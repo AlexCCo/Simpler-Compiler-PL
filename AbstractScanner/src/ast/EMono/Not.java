@@ -12,6 +12,6 @@ public class Not extends EMono {
 
     @Override
     public String toString() {
-        return String.format("[EUnario]logicalNOT { %s }", this.opnd1().toString());
+        return String.format("NOT ( %s )", this.opnd1().toString());
     }
 }

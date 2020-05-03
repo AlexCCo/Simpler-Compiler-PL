@@ -12,6 +12,6 @@ public class Or extends EBin {
 
     @Override
     public String toString() {
-        return String.format("[EBin]logicalOR { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+        return String.format("OR ( %s, %s )", this.opnd1().toString(), this.opnd2().toString());
     }
 }

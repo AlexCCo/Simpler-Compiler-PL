@@ -12,6 +12,6 @@ public class Menor extends EBin {
 
     @Override
     public String toString() {
-        return String.format("[EBin]< { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+        return String.format("< ( %s, %s )", this.opnd1().toString(), this.opnd2().toString());
     }
 }

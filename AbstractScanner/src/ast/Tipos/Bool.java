@@ -11,6 +11,6 @@ public class Bool extends Tipo {
 
 	@Override
 	public String toString() {
-		return String.format("[ETipo]booleano { %s }", this.val());
+		return String.format("BOOL { %s }", this.val());
 	}
 }

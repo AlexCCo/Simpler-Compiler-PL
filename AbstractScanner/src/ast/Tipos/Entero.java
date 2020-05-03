@@ -11,6 +11,6 @@ public class Entero extends Tipo {
 
 	@Override
 	public String toString() {
-		return String.format("[ETipo]numeroEntero { %s }", this.val());
+		return String.format("INT ( %s )", this.val());
 	}
 }

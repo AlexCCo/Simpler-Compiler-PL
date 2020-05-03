@@ -12,6 +12,6 @@ public class And extends EBin {
 
     @Override
     public String toString() {
-        return String.format("[EBin]logicalAND { %s, %s }", this.opnd1().toString(), this.opnd2().toString());
+        return String.format("AND ( %s, %s )", this.opnd1().toString(), this.opnd2().toString());
     }
 }

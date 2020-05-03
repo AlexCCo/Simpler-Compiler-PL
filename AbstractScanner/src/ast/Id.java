@@ -13,6 +13,6 @@ public class Id extends E {
 
   @Override
   public String toString() {
-    return String.format("[ETipo]nombreVariable { %s }", this.id);
+    return String.format("var_name ( %s )", this.id);
   }
 }

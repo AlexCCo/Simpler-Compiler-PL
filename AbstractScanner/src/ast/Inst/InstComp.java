@@ -4,29 +4,19 @@ import ast.E;
 import ast.TipoInst;
 
 public class InstComp extends Inst {
-	private String id;
-	private E exp;
-	private Inst decs;
+	private Inst inst1;
+	private Inst inst2;
 
-	public InstComp(Inst decs, String id, E exp) {
-		this.decs = decs;  
-		this.id = id;
-		this.exp = exp;
+	public InstComp(Inst inst1, Inst inst2){
+		this.inst1 = inst1;
+		this.inst2 = inst2;
 	}
 
-	public InstComp(Inst decs, Inst newInst){
-		this.decs = decs;
-		this.id = newInst.id();
-		this.exp = newInst.exp();
-	}
-
-	public Inst decs() {return decs;}
-	public String id() {return id;}
-	public E exp() {return exp;}
+	public Inst decs() {return this;}
 	public TipoInst tipo() {return TipoInst.INSTCOMP;}
 
 	@Override
 	public String toString() {
-		return String.format("inst_compuesta { {%s, %s}, %s }", this.id, this.exp, this.decs.toString());
+		return String.format("InstComp ( %s, %s )", this.inst1.toString(), this.inst2.toString());
 	}
 }
