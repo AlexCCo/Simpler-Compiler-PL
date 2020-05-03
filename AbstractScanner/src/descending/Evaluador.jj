@@ -60,12 +60,12 @@ PARSER_END(Evaluador)
                   {SDa=SD() <EOD> ISa=IS() {return ASConstructor.prog_completo(SDa, ISa);}}
 
 
-  Dec SD()   : {Dec VARa; Dec RSDa;} 
+  Dec SD()   : {Dec VARa; Dec RSDa;}
                   {VARa=VAR() RSDa=RSD(VARa) {return  RSDa;}} 
 
-  Dec RSD(Dec ah)   : {Dec VARa; Dec RSD1a;} 
+  Dec RSD(Dec ah)   : {Dec VARa; Dec RSD1a;}
                       {<EOI> VARa=VAR() RSD1a=RSD(ASConstructor.decs_compuesta(ah, VARa)) {return RSD1a;} |
-                      {return ah;}} 
+                      {return ah;}}
 
   Dec VAR()   : {String tp; Token nv;}
                  {tp=TP() nv=<VAR_NAME> {return  ASConstructor.decl(tp, nv.image);}}

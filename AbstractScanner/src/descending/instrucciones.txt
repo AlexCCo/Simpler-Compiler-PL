@@ -1,7 +1,7 @@
 
 
 1. Generar el código con javacc se debe ejecutar el siguiente comando:
-    java -cp javacc.jar javacc Tiny.jj
+    java -cp javacc.jar javacc Evaluador.jj
 
 2. En Main.java escribir la dirección del archivo a evaluar
     eval = new Evaluador(new FileReader("AbstractScanner/src/examples/ejemplo.alex"));
